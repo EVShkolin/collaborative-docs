@@ -5,13 +5,16 @@ namespace App\Service;
 use App\DTO\Document\DocumentRequestDto;
 use App\DTO\Document\DocumentResponseDto;
 use App\Entity\Document;
+use App\Entity\DocumentParticipant;
 use App\Exception\ObjectNotFoundException;
 use App\Mapper\DocumentMapper;
 use App\Repository\DocumentRepository;
 use App\Security\UserContext;
 use Doctrine\ORM\EntityManagerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Finder\Exception\AccessDeniedException;
+
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Uid\Uuid;
 
 readonly class DocumentService
@@ -20,6 +23,7 @@ readonly class DocumentService
         private DocumentRepository     $documentRepository,
         private EntityManagerInterface $em,
         private UserContext            $userContext,
+        private JWTEncoderInterface    $jwtEncoder,
         private DocumentMapper         $mapper,
         private LoggerInterface        $log
     ) {}
@@ -42,6 +46,35 @@ readonly class DocumentService
             ?? throw new ObjectNotFoundException('Document', $id);
         // TODO: check visibility of the document
         return $this->mapper->toDto($document);
+    }
+
+    public function generateWsToken(Uuid $id): string
+    {
+        $this->log->debug("IN DocumentService->generateWsToken for document {$id}");
+
+        $document = $this->em->find(Document::class, $id)
+            ?? throw new ObjectNotFoundException('Document', $id);
+        $isOwner = $document->getOwner()->getId()->equals($this->userContext->getUserId());
+        $participant = null;
+        if (!$isOwner) {
+            $participant = $this->em->getRepository(DocumentParticipant::class)->findOneBy([
+                'document' => $document,
+                'user' => $this->userContext->getUser()
+            ]);
+        }
+
+        if (!$isOwner && !$participant) {
+            throw new AccessDeniedException("You are not authorized to access this document");
+        }
+
+        $role = $isOwner ? 'editor' : $participant->getRole()->value;
+        return $this->jwtEncoder->encode([
+            'documentId' => $document->getId()->toString(),
+            'userId' => $this->userContext->getUserId(),
+            'username' => $this->userContext->getUser()->getName(),
+            'role' => $role,
+            'exp' => time() + 60,
+        ]);
     }
 
     public function save(DocumentRequestDto $dto): DocumentResponseDto

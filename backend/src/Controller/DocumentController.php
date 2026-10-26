@@ -31,6 +31,13 @@ class DocumentController extends AbstractController
         return $this->json($this->documentService->findById($id));
     }
 
+    #[Route('/{id}/ws-token', name: 'v1_documents_get_ws_token', methods: ['GET'])]
+    public function getWsToken(Uuid $id): JsonResponse
+    {
+        $token = $this->documentService->generateWsToken($id);
+        return $this->json(['token' => $token]);
+    }
+
     #[Route('', name: 'v1_documents_save', methods: ['POST'])]
     public function save(#[MapRequestPayload] DocumentRequestDto $docDto): JsonResponse
     {
