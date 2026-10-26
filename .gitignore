@@ -9,6 +9,7 @@ var/
 vendor/
 migrations/
 **/config/jwt/*.pem
+openapi.yaml
 ###< symfony/framework-bundle ###
 
 # Logs

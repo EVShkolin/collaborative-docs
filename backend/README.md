@@ -24,6 +24,14 @@ php bin/console doctrine:migrations:migrate
 php bin/console lexik:jwt:generate-keypair
 ```
 
+# OpenApi
+
+### Генерация Swagger-спецификации
+
+```
+php bin/console nelmio:apidoc:dump --format=yaml > openapi.yaml
+```
+
 # Переменные окружения
 
 Создайте .env на основе .env.example.
