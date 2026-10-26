@@ -5,12 +5,23 @@
 # Миграции
 
 ### Генерация классов для миграции на основе сущностей
+
 ```
 php bin/console doctrine:migrations:diff
 ```
+
 ### Применение миграций
+
 ```
 php bin/console doctrine:migrations:migrate
+```
+
+# Security
+
+### Сгенерировать пару ключей для jwt (в config/jwt)
+
+```
+php bin/console lexik:jwt:generate-keypair
 ```
 
 # Переменные окружения
@@ -28,11 +39,19 @@ php bin/console doctrine:migrations:migrate
 
 ### Database (PostgreSQL)
 
-| Переменная          | Описание                                                                                                                                             | По умолчанию | Обязательна |
-|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|-------------|
-| `POSTGRES_URL`      | Хост базы данных. В Docker-окружении обычно имя сервиса (`db`, `postgres`), локально — `localhost`.                                                  | `localhost`  | Да          |
-| `POSTGRES_PORT`     | Порт PostgreSQL.                                                                                                                                     | `5432`       | Да          |
-| `POSTGRES_USERNAME` | Имя пользователя БД.                                                                                                                                 | `postgres`   | Да          |
-| `POSTGRES_PASSWORD` | Пароль пользователя БД. В production задавайте через секреты (Docker secrets / K8s secrets / реальные env), а не в файле.                            | `postgres`   | Да          |
-| `POSTGRES_DB`       | Имя базы данных приложения.                                                                                                                          | `collab_doc` | Да          |
-| `POSTGRES_VERSION`  | Версия сервера PostgreSQL. Нужна Doctrine, чтобы генерировать SQL под конкретную версию и не делать лишний запрос за версией при каждом подключении. | `17`         | Да          |
+| Переменная          | Описание                    | По умолчанию | Обязательна |
+|---------------------|-----------------------------|--------------|-------------|
+| `POSTGRES_URL`      | Хост базы данных.           | `localhost`  | Да          |
+| `POSTGRES_PORT`     | Порт PostgreSQL.            | `5432`       | Да          |
+| `POSTGRES_USERNAME` | Имя пользователя БД.        | `postgres`   | Да          |
+| `POSTGRES_PASSWORD` | Пароль пользователя БД.     | `postgres`   | Да          |
+| `POSTGRES_DB`       | Имя базы данных приложения. | `collab_doc` | Да          |
+| `POSTGRES_VERSION`  | Версия сервера PostgreSQL.  | `17`         | Да          |
+
+### Security
+
+| Переменная       | Описание                                                                                    | По умолчанию                                  | Обязательна |
+|------------------|---------------------------------------------------------------------------------------------|-----------------------------------------------|-------------|
+| `JWT_SECRET_KEY` | Путь к приватному SSL-ключу (`private.pem`), используемому для подписи токенов авторизации. | `%kernel.project_dir%/config/jwt/private.pem` | Да          |
+| `JWT_PUBLIC_KEY` | Путь к публичному SSL-ключу (`public.pem`), используемому для проверки подписи токенов.     | `%kernel.project_dir%/config/jwt/public.pem`  | Да          |
+| `JWT_PASSPHRASE` | Пароль, которым зашифрован `private.pem`.                                                   | `passphrase`                                  | Да          |

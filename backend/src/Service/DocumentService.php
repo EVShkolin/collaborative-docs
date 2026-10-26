@@ -5,10 +5,10 @@ namespace App\Service;
 use App\DTO\Document\DocumentRequestDto;
 use App\DTO\Document\DocumentResponseDto;
 use App\Entity\Document;
-use App\Entity\User;
 use App\Exception\ObjectNotFoundException;
 use App\Mapper\DocumentMapper;
 use App\Repository\DocumentRepository;
+use App\Security\UserContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
@@ -16,28 +16,22 @@ use Symfony\Component\Uid\Uuid;
 
 readonly class DocumentService
 {
-    private Uuid $tmpUserId;
-
     public function __construct(
-        private DocumentRepository $documentRepository,
+        private DocumentRepository     $documentRepository,
         private EntityManagerInterface $em,
-        private DocumentMapper $mapper,
-        private LoggerInterface $log
-    )
-    {
-        // TODO get id from security context
-        $this->tmpUserId = new Uuid('01a17472-729a-706c-ac38-7eece462fe47');
-    }
+        private UserContext            $userContext,
+        private DocumentMapper         $mapper,
+        private LoggerInterface        $log
+    ) {}
 
     /**
      * @return DocumentResponseDto[]
      */
     public function findAll(): array
     {
-        $this->log->debug("IN DocumentService findAll for user $this->tmpUserId");
+        $this->log->debug("IN DocumentService findAll for user {$this->userContext->getUserId()}");
 
-        $documents = $this->documentRepository->findAvailableForUser($this->tmpUserId);
-        $this->log->debug("IN DocumentService found all docs");
+        $documents = $this->documentRepository->findAvailableForUser($this->userContext->getUserId());
         return array_map(fn(Document $doc) => $this->mapper->toDto($doc), $documents);
     }
 
@@ -54,8 +48,7 @@ readonly class DocumentService
     {
         $this->log->debug("IN DocumentService save $dto->title");
 
-        // TODO: use id from security context
-        $user = $this->em->getReference(User::class, $this->tmpUserId);
+        $user = $this->userContext->getUser();
         $document = $this->mapper->toEntity($dto, $user);
 
         $this->em->persist($document);
@@ -83,8 +76,7 @@ readonly class DocumentService
         $document = $this->em->find(Document::class, $id)
             ?? throw new ObjectNotFoundException('Document', $id);
 
-        // TODO: use id from security context
-        if (!$document->getOwner()->getId()->equals($this->tmpUserId)) {
+        if (!$document->getOwner()->getId()->equals($this->userContext->getUserId())) {
             throw new AccessDeniedException('Only the owner can delete documents');
         }
 
