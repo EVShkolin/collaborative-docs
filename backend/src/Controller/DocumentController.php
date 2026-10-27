@@ -52,9 +52,12 @@ class DocumentController extends AbstractController
     #[OA\Response(
         response: 200,
         description: 'Получить токен для WebSocket подключения',
-        content: new OA\JsonContent(properties: [
-            new OA\Property(property: 'token', type: 'string')
-        ])
+        content: new OA\JsonContent(
+            required: ['token'],
+            properties: [
+                new OA\Property(property: 'token', type: 'string')
+            ]
+        )
     )]
     public function getWsToken(Uuid $id): JsonResponse
     {

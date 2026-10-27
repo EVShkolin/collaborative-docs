@@ -1,28 +1,12 @@
-import { HocuspocusProviderWebsocketComponent, HocuspocusRoom } from '@hocuspocus/provider-react';
-import { HocuspocusProviderWebsocket } from '@hocuspocus/provider';
-import { useMemo } from 'react';
-import { Editor } from '@/Editor.tsx';
+import { AuthProvider } from '@/providers/auth/AuthProvider.tsx';
+import { AppRouter } from '@/providers/router/AppRouter.tsx';
 
 const App = () => {
-  const websocketProvider = useMemo(
-    () =>
-      new HocuspocusProviderWebsocket({
-        url: '/ws',
-        maxAttempts: 5,
-        onMaxAttemptsFailed: ({ error }) => {
-          console.error('Could not connect to the server:', error)
-        },
-      }),
-    [],
-  )
-
   return (
-    <HocuspocusProviderWebsocketComponent websocketProvider={websocketProvider}>
-      <HocuspocusRoom name='test'>
-        <Editor />
-      </HocuspocusRoom>
-    </HocuspocusProviderWebsocketComponent>
-  )
+    <AuthProvider>
+      <AppRouter />
+    </AuthProvider>
+  );
 };
 
 export default App;

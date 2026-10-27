@@ -1,8 +1,16 @@
-import { defineConfig } from 'orval';
-
-export default defineConfig({
-  collabDoc: {
+module.exports = {
+  api: {
     input: './openapi.yaml',
-    output: './src/apiClient.ts',
+    output: {
+      target: './src/api/apiClient.ts',
+      client: 'axios',
+
+      override: {
+        mutator: {
+          path: './src/api/client.config.ts',
+          name: 'customInstance',
+        },
+      },
+    },
   },
-});
+};
