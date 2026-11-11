@@ -3,9 +3,9 @@ import { HocuspocusProviderWebsocket } from '@hocuspocus/provider';
 import { useMemo } from 'react';
 import { Editor } from '@/Editor.tsx';
 import { useParams } from 'react-router-dom';
-import { getCollaborativeDocsAPI } from '@/api/apiClient';
+import { getDocuments } from '@/shared/api/apiClient';
 
-const { getV1DocumentsGetWsToken } = getCollaborativeDocsAPI();
+const { getV1DocumentsGetWsToken } = getDocuments();
 
 export const DocumentPage = () => {
   const { documentId } = useParams();
@@ -16,10 +16,10 @@ export const DocumentPage = () => {
         url: '/ws',
         maxAttempts: 5,
         onMaxAttemptsFailed: ({ error }) => {
-          console.error('Could not connect to the server:', error)
+          console.error('Could not connect to the server:', error);
         },
       }),
-    [],
+    []
   );
 
   if (!websocketProvider || typeof documentId !== 'string') {

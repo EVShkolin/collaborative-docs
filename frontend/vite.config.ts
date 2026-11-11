@@ -22,7 +22,7 @@ export default defineConfig({
         changeOrigin: true,
         ws: true,
         rewrite: (path: string) => path.replace('/ws', ''),
-      }
+      },
     },
   },
 });
