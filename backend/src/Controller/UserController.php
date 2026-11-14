@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DTO\Error\ValidationErrorDto;
 use App\DTO\User\UserCreateDto;
 use App\DTO\User\UserResponseDto;
 use App\Service\UserService;
@@ -23,6 +24,18 @@ class UserController extends AbstractController
         private readonly UserService $userService
     ) {}
 
+    #[Route('/me', name: 'v1_users_find_me', methods: ['GET'])]
+    #[OA\Response(
+        response: 200,
+        description: 'Получить информацию о текущем пользователе',
+        content: new OA\JsonContent(ref: new Model(type: UserResponseDto::class))
+    )]
+    public function findMe(): JsonResponse
+    {
+        $user = $this->userService->findMe();
+        return $this->json($user);
+    }
+
     #[Route('/{id}', name: 'v1_users_find_by_id', methods: ['GET'])]
     #[OA\Response(
         response: 200,
@@ -36,11 +49,17 @@ class UserController extends AbstractController
     }
 
     #[Route('', name: 'v1_users_save', methods: ['POST'])]
-    #[OA\Response(
-        response: 201,
-        description: 'Пользователь успешно зарегистрирован (создан)',
-        content: new OA\JsonContent(ref: new Model(type: UserResponseDto::class))
-    )]
+    #[OA\Post(responses: [
+        new OA\Response(
+            response: 201,
+            description: 'Пользователь успешно зарегистрирован (создан)',
+            content: new OA\JsonContent(ref: new Model(type: UserResponseDto::class))),
+        new OA\Response(
+            response: 422,
+            description: 'Ошибка валидации при регистрации',
+            content: new OA\JsonContent(ref: new Model(type: ValidationErrorDto::class))
+        )
+    ])]
     public function save(#[MapRequestPayload] UserCreateDto $userDto): JsonResponse
     {
         $user = $this->userService->save($userDto);
