@@ -5,11 +5,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
-import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
-import { Separator } from '@/shared/ui/separator';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Button } from '@/shared/ui/button.tsx';
+import { Input } from '@/shared/ui/input.tsx';
+import { Label } from '@/shared/ui/label.tsx';
+import { Separator } from '@/shared/ui/separator.tsx';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/shared/ui/card.tsx';
 import { GoogleIcon } from '@/shared/images/GoogleIcon.tsx';
 import { GithubIcon } from '@/shared/images/GithubIcon.tsx';
 import { toast } from '@/shared/ui/toast.tsx';

@@ -7,6 +7,7 @@ use App\DTO\User\UserResponseDto;
 use App\Entity\User;
 use App\Exception\ObjectNotFoundException;
 use App\Mapper\UserMapper;
+use App\Security\UserContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -18,9 +19,17 @@ readonly class UserService
     public function __construct(
         private EntityManagerInterface      $em,
         private UserMapper                  $mapper,
+        private UserContext                 $userContext,
         private UserPasswordHasherInterface $passwordHasher,
         private LoggerInterface             $log,
     ) {}
+
+    public function findMe(): UserResponseDto
+    {
+        $this->log->debug("IN UserService findMe");
+        $user = $this->userContext->getUser();
+        return $this->mapper->toDto($user);
+    }
 
     public function findById(Uuid $id): UserResponseDto
     {

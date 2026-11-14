@@ -1,9 +1,9 @@
 import { HocuspocusProviderWebsocketComponent, HocuspocusRoom } from '@hocuspocus/provider-react';
 import { HocuspocusProviderWebsocket } from '@hocuspocus/provider';
 import { useMemo } from 'react';
-import { Editor } from '@/Editor.tsx';
 import { useParams } from 'react-router-dom';
 import { getDocuments } from '@/shared/api/apiClient';
+import { EditorGate } from '@/pages/document/EditorGate.tsx';
 
 const { getV1DocumentsGetWsToken } = getDocuments();
 
@@ -40,7 +40,7 @@ export const DocumentPage = () => {
           }
         }}
       >
-        <Editor />
+        <EditorGate documentId={documentId} />
       </HocuspocusRoom>
     </HocuspocusProviderWebsocketComponent>
   );

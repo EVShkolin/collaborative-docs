@@ -27,7 +27,5 @@ new Server<UserContext>({
     };
   },
 
-  extensions: [
-    databaseExtension(),
-  ],
+  extensions: [databaseExtension()],
 }).listen();
