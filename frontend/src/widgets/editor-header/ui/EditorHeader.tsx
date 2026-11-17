@@ -7,16 +7,19 @@ import { DocumentTitleInput } from '@/features/document-title-input/ui/DocumentT
 import { useTheme } from '@/app/providers/theme/ThemeContext.ts';
 import { useHocuspocusSyncStatus } from '@hocuspocus/provider-react';
 import { ActiveParticipantsAvatarGroup } from '@/features/document-participants/ui/ActiveParticipantsAvatarGroup.tsx';
+import { Toolbar } from '@/features/editor-toolbar/ui/Toolbar.tsx';
+import { useNavigate } from 'react-router-dom';
 
 export const EditorHeader = ({ documentId, toggleOpen }: { documentId: string; toggleOpen: () => void }) => {
   const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
   const { data: doc } = useDocument(documentId);
   const syncStatus = useHocuspocusSyncStatus();
 
   return (
-    <header className="w-full border border-border bg-card">
+    <header className="w-full border border-border bg-header">
       <div className="flex h-14 items-center gap-2 px-3 sm:px-4">
-        <Button variant="ghost" className="size-8">
+        <Button variant="ghost" className="size-8" onClick={() => navigate('/documents')}>
           <ChevronLeft className="size-[18px]" />
         </Button>
         <Separator orientation="vertical" className="h-5 my-auto mx-1" />
@@ -45,7 +48,7 @@ export const EditorHeader = ({ documentId, toggleOpen }: { documentId: string; t
         </Button>
       </div>
 
-      <div className="Toolbar"></div>
+      <Toolbar/>
     </header>
   );
 };

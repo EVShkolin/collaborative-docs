@@ -8,7 +8,7 @@ export const ActiveParticipantsAvatarGroup = ({ documentId }: { documentId: stri
   return (
     <AvatarGroup>
       {onlineParticipants?.slice(0, 3).map((p) => (
-        <UserAvatar name={p.user.name} avatarUrl={p.user.avatarUrl} />
+        <UserAvatar name={p.user.name} avatarUrl={p.user.avatarUrl} key={p.user.id} />
       ))}
       {onlineParticipants && onlineParticipants.length > 3 && (
         <AvatarGroupCount>+{onlineParticipants.length - 3}</AvatarGroupCount>

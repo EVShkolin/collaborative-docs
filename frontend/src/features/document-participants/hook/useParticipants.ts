@@ -8,7 +8,6 @@ export const useParticipants = (documentId: string) => {
   const onlineIds = useMemo(() => new Set(onlineUsers.map((u) => u.id)), [onlineUsers]);
 
   const { onlineParticipants, offlineParticipants } = useMemo(() => {
-    console.log('recount with online: ', onlineIds.size);
     const online = [];
     const offline = [];
     for (const p of allParticipants ?? []) {

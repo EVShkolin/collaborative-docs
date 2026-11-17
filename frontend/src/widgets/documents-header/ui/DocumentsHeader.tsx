@@ -12,7 +12,7 @@ export const DocumentsHeader = () => {
   const { data: currentUser } = useCurrentUser();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-card/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-30 border-b border-border bg-header/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-5 px-5 lg:px-8">
         <button
           aria-label="Перейти к документам"
