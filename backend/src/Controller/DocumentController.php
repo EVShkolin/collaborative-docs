@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DTO\Document\DocumentAccessDto;
 use App\DTO\Document\DocumentRequestDto;
 use App\DTO\Document\DocumentResponseDto;
 use App\Service\DocumentService;
@@ -48,21 +49,15 @@ class DocumentController extends AbstractController
         return $this->json($this->documentService->findById($id));
     }
 
-    #[Route('/{id}/ws-token', name: 'v1_documents_get_ws_token', methods: ['GET'])]
+    #[Route('/{id}/access', name: 'v1_access_document', methods: ['GET'])]
     #[OA\Response(
         response: 200,
-        description: 'Получить токен для WebSocket подключения',
-        content: new OA\JsonContent(
-            required: ['token'],
-            properties: [
-                new OA\Property(property: 'token', type: 'string')
-            ]
-        )
+        description: 'Получить доступ к документу: токен для websocket-подключения и роль',
+        content: new OA\JsonContent(ref: new Model(type: DocumentAccessDto::class))
     )]
-    public function getWsToken(Uuid $id): JsonResponse
+    public function accessDocument(Uuid $id): JsonResponse
     {
-        $token = $this->documentService->generateWsToken($id);
-        return $this->json(['token' => $token]);
+        return $this->json($this->documentService->accessDocument($id));
     }
 
     #[Route('', name: 'v1_documents_save', methods: ['POST'])]

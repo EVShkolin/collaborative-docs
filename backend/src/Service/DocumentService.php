@@ -2,10 +2,12 @@
 
 namespace App\Service;
 
+use App\DTO\Document\DocumentAccessDto;
 use App\DTO\Document\DocumentRequestDto;
 use App\DTO\Document\DocumentResponseDto;
 use App\Entity\Document;
 use App\Entity\DocumentParticipant;
+use App\Enum\ParticipantRole;
 use App\Exception\ObjectNotFoundException;
 use App\Mapper\DocumentMapper;
 use App\Repository\DocumentRepository;
@@ -21,6 +23,7 @@ readonly class DocumentService
 {
     public function __construct(
         private DocumentRepository     $documentRepository,
+        private ParticipantService     $participantService,
         private EntityManagerInterface $em,
         private UserContext            $userContext,
         private JWTEncoderInterface    $jwtEncoder,
@@ -48,33 +51,27 @@ readonly class DocumentService
         return $this->mapper->toDto($document);
     }
 
-    public function generateWsToken(Uuid $id): string
+    public function accessDocument(Uuid $id): DocumentAccessDto
     {
         $this->log->debug("IN DocumentService->generateWsToken for document {$id}");
 
         $document = $this->em->find(Document::class, $id)
             ?? throw new ObjectNotFoundException('Document', $id);
-        $isOwner = $document->getOwner()->getId()->equals($this->userContext->getUserId());
-        $participant = null;
-        if (!$isOwner) {
-            $participant = $this->em->getRepository(DocumentParticipant::class)->findOneBy([
-                'document' => $document,
-                'user' => $this->userContext->getUser()
-            ]);
-        }
 
-        if (!$isOwner && !$participant) {
-            throw new AccessDeniedException("You are not authorized to access this document");
-        }
+        $participant = $this->em->getRepository(DocumentParticipant::class)->findOneBy([
+            'document' => $document,
+            'user' => $this->userContext->getUser()
+        ]) ?? throw new AccessDeniedException("You are not authorized to access this document");
 
-        $role = $isOwner ? 'editor' : $participant->getRole()->value;
-        return $this->jwtEncoder->encode([
+        $wsToken =  $this->jwtEncoder->encode([
             'documentId' => $document->getId()->toString(),
             'userId' => $this->userContext->getUserId(),
             'username' => $this->userContext->getUser()->getName(),
-            'role' => $role,
+            'role' => $participant->getRole(),
             'exp' => time() + 60,
         ]);
+
+        return new DocumentAccessDto($wsToken, $participant->getRole());
     }
 
     public function save(DocumentRequestDto $dto): DocumentResponseDto
@@ -84,10 +81,13 @@ readonly class DocumentService
         $user = $this->userContext->getUser();
         $document = $this->mapper->toEntity($dto, $user);
 
-        $this->em->persist($document);
-        $this->em->flush();
+        return $this->em->wrapInTransaction(function () use ($document, $user) {
+            $this->em->persist($document);
+            $this->em->persist(new DocumentParticipant($user, $document, role: ParticipantRole::OWNER));
+            $this->em->flush();
 
-        return $this->mapper->toDto($document);
+            return $this->mapper->toDto($document);
+        });
     }
 
     public function update(Uuid $id, DocumentRequestDto $dto): DocumentResponseDto

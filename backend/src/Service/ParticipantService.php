@@ -7,6 +7,7 @@ use App\DTO\Participant\ParticipantResponseDto;
 use App\Entity\Document;
 use App\Entity\DocumentParticipant;
 use App\Entity\User;
+use App\Enum\ParticipantRole;
 use App\Exception\ObjectNotFoundException;
 use App\Mapper\ParticipantMapper;
 use Doctrine\ORM\EntityManagerInterface;

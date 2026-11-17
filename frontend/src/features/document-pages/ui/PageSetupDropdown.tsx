@@ -82,7 +82,7 @@ export function PageSetupDropdownComponent({ disabled = false }: PageSetupDropdo
     <DropdownMenu disabled={disabled}>
       <DropdownMenuTrigger
         render={
-          <Button variant="outline">
+          <Button variant="ghost">
             <FileText /> <ChevronDown />
           </Button>
         }
@@ -92,9 +92,6 @@ export function PageSetupDropdownComponent({ disabled = false }: PageSetupDropdo
           <DropdownMenuSubTrigger>Page size</DropdownMenuSubTrigger>
           <DropdownMenuPortal>
             <DropdownMenuSubContent>
-              <DropdownMenuItem className={pageSetup === null ? 'bg-accent' : ''} onClick={() => applyUpdate(null)}>
-                Pageless
-              </DropdownMenuItem>
               {PAGE_SIZE_ORDER.map((size) => (
                 <DropdownMenuItem
                   key={size}

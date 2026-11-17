@@ -7,4 +7,5 @@ enum ParticipantRole: string
     case VIEWER = 'viewer';
     case COMMENTER = 'commenter';
     case EDITOR = 'editor';
+    case OWNER = 'owner';
 }

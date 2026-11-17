@@ -1,46 +1,36 @@
 import { HocuspocusProviderWebsocketComponent, HocuspocusRoom } from '@hocuspocus/provider-react';
-import { HocuspocusProviderWebsocket } from '@hocuspocus/provider';
-import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { getDocuments } from '@/shared/api/apiClient';
 import { EditorGate } from '@/pages/document/EditorGate.tsx';
-
-const { getV1DocumentsGetWsToken } = getDocuments();
+import { useAccessDocument } from '@/entities/document/api/queries.ts';
+import { useCurrentUser } from '@/entities/user/api/queries.ts';
+import { Spinner } from '@/shared/ui/spinner.tsx';
+import { handleStatelessMessage } from '@/features/websocket/lib/handleStatelessMessage.ts';
 
 export const DocumentPage = () => {
   const { documentId } = useParams();
+  const accessQuery = useAccessDocument(documentId);
+  const userQuery = useCurrentUser();
 
-  const websocketProvider = useMemo(
-    () =>
-      new HocuspocusProviderWebsocket({
-        url: '/ws',
-        maxAttempts: 5,
-        onMaxAttemptsFailed: ({ error }) => {
-          console.error('Could not connect to the server:', error);
-        },
-      }),
-    []
-  );
+  const isPending = accessQuery.isPending || userQuery.isPending;
+  const isError = accessQuery.isError || userQuery.isError || !documentId;
 
-  if (!websocketProvider || typeof documentId !== 'string') {
-    return <div className="flex justify-center p-10">Подключение к документу...</div>;
+  if (isError) {
+    return <div className="p-10">Документ не найден</div>;
+  }
+
+  if (isPending) {
+    return <Spinner className="size-10" />;
   }
 
   return (
-    <HocuspocusProviderWebsocketComponent websocketProvider={websocketProvider}>
+    <HocuspocusProviderWebsocketComponent url="/ws">
       <HocuspocusRoom
+        flushDelay={500}
         name={documentId}
-        token={async () => {
-          try {
-            const res = await getV1DocumentsGetWsToken(documentId);
-            return res.token;
-          } catch (err) {
-            console.log('Could not get ws token: ' + err);
-            throw err;
-          }
-        }}
+        token={accessQuery.data.token}
+        onStateless={handleStatelessMessage}
       >
-        <EditorGate documentId={documentId} />
+        <EditorGate documentId={documentId} currentUser={userQuery.data} />
       </HocuspocusRoom>
     </HocuspocusProviderWebsocketComponent>
   );

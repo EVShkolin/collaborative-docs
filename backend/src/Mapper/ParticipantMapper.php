@@ -16,7 +16,7 @@ readonly class ParticipantMapper
         return new ParticipantResponseDto(
             $participant->getId(),
             $this->userMapper->toDto($participant->getUser()),
-            $participant->getRole()->value,
+            $participant->getRole(),
             $participant->getJoinedAt()
         );
     }
