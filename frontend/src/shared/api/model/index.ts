@@ -6,11 +6,13 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './documentAccessDto';
 export * from './documentRequestDto';
 export * from './documentResponseDto';
 export * from './getV1DocumentsGetWsToken200';
 export * from './participantRequestDto';
 export * from './participantResponseDto';
+export * from './participantRole';
 export * from './postApiV1AuthLogin200';
 export * from './postApiV1AuthLoginBody';
 export * from './userCreateDto';

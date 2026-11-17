@@ -5,11 +5,12 @@
  * REST API для совместного редактирования документов
  * OpenAPI spec version: 1.0.0
  */
+import type { ParticipantRole } from './participantRole';
 import type { UserResponseDto } from './userResponseDto';
 
 export interface ParticipantResponseDto {
   id: string;
   user: UserResponseDto;
-  role: string;
+  role: ParticipantRole;
   joinedAt: string;
 }

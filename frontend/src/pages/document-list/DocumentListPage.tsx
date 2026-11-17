@@ -80,7 +80,7 @@ export const DocumentListPage = () => {
 
         <ul className="flex flex-col rounded-xl bg-card border mt-6 overflow-hidden">
           {!documents
-            ? [1, 2, 3].map(() => <DocumentCardSkeleton />)
+            ? [1, 2, 3].map((v) => <DocumentCardSkeleton key={v} />)
             : documents.map((doc) => <DocumentCard key={doc.id} doc={doc} />)}
         </ul>
       </main>

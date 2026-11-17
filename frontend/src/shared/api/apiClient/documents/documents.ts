@@ -5,7 +5,7 @@
  * REST API для совместного редактирования документов
  * OpenAPI spec version: 1.0.0
  */
-import type { DocumentRequestDto, DocumentResponseDto, GetV1DocumentsGetWsToken200 } from '../../model';
+import type { DocumentAccessDto, DocumentRequestDto, DocumentResponseDto } from '../../model';
 
 import { customInstance } from '../../client.config';
 import type { BodyType } from '../../client.config';
@@ -54,14 +54,8 @@ export const getDocuments = () => {
   const deleteV1DocumentsDelete = (id: string, options?: SecondParameter<typeof customInstance<void>>) => {
     return customInstance<void>({ url: `/api/v1/documents/${id}`, method: 'DELETE' }, options);
   };
-  const getV1DocumentsGetWsToken = (
-    id: string,
-    options?: SecondParameter<typeof customInstance<GetV1DocumentsGetWsToken200>>
-  ) => {
-    return customInstance<GetV1DocumentsGetWsToken200>(
-      { url: `/api/v1/documents/${id}/ws-token`, method: 'GET' },
-      options
-    );
+  const getV1AccessDocument = (id: string, options?: SecondParameter<typeof customInstance<DocumentAccessDto>>) => {
+    return customInstance<DocumentAccessDto>({ url: `/api/v1/documents/${id}/access`, method: 'GET' }, options);
   };
   return {
     getV1DocumentsFindAll,
@@ -69,7 +63,7 @@ export const getDocuments = () => {
     getV1DocumentsFindById,
     putV1DocumentsUpdate,
     deleteV1DocumentsDelete,
-    getV1DocumentsGetWsToken,
+    getV1AccessDocument,
   };
 };
 export type GetV1DocumentsFindAllResult = NonNullable<
@@ -87,6 +81,6 @@ export type PutV1DocumentsUpdateResult = NonNullable<
 export type DeleteV1DocumentsDeleteResult = NonNullable<
   Awaited<ReturnType<ReturnType<typeof getDocuments>['deleteV1DocumentsDelete']>>
 >;
-export type GetV1DocumentsGetWsTokenResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getDocuments>['getV1DocumentsGetWsToken']>>
+export type GetV1AccessDocumentResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getDocuments>['getV1AccessDocument']>>
 >;

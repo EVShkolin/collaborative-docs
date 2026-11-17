@@ -16,9 +16,7 @@ let cachedPublicKey: string | undefined;
 function loadPublicKey(): string {
   if (cachedPublicKey) return cachedPublicKey;
 
-  const keyPath =
-    process.env.JWT_PUBLIC_KEY ??
-    path.join(process.cwd(), 'keys', 'jwt-public.pem');
+  const keyPath = process.env.JWT_PUBLIC_KEY ?? path.join(process.cwd(), 'keys', 'jwt-public.pem');
 
   cachedPublicKey = fs.readFileSync(keyPath, 'utf8').trim();
   return cachedPublicKey;
