@@ -69,6 +69,16 @@ class Document
         $this->owner = $owner;
     }
 
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    public function setParticipants(Collection $participants): void
+    {
+        $this->participants = $participants;
+    }
+
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;

@@ -5,14 +5,18 @@ namespace App\Controller;
 use App\DTO\Document\DocumentAccessDto;
 use App\DTO\Document\DocumentRequestDto;
 use App\DTO\Document\DocumentResponseDto;
+use App\Entity\Document;
+use App\Security\Voter\DocumentVoter;
 use App\Service\DocumentService;
 use Nelmio\ApiDocBundle\Attribute\Model;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Uid\Uuid;
 use OpenApi\Attributes as OA;
 

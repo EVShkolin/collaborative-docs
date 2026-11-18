@@ -53,7 +53,7 @@ readonly class DocumentService
 
     public function accessDocument(Uuid $id): DocumentAccessDto
     {
-        $this->log->debug("IN DocumentService->generateWsToken for document {$id}");
+        $this->log->debug("IN DocumentService generateWsToken for document $id");
 
         $document = $this->em->find(Document::class, $id)
             ?? throw new ObjectNotFoundException('Document', $id);
@@ -96,6 +96,9 @@ readonly class DocumentService
 
         $document = $this->em->find(Document::class, $id)
             ?? throw new ObjectNotFoundException('Document', $id);
+        if ($document->getOwner()->getId() !== $this->userContext->getUserId())
+            throw new AccessDeniedException("You are not authorized to edit this document");
+
         $document->setTitle($dto->title);
         $this->em->flush();
 
