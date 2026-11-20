@@ -1,10 +1,9 @@
-import { Editor } from '@/pages/document/Editor.tsx';
+import { Editor, type EditorProps } from '@/pages/document/Editor.tsx';
 import { useHocuspocusEvent } from '@hocuspocus/provider-react';
 import { Spinner } from '@/shared/ui/spinner.tsx';
 import { useState } from 'react';
-import type { UserResponseDto } from '@/shared/api/model';
 
-export const EditorGate = ({ documentId, currentUser }: { documentId: string; currentUser: UserResponseDto }) => {
+export const EditorGate = ({ documentId, currentUser, role }: EditorProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useHocuspocusEvent('authenticated', () => {
@@ -15,5 +14,5 @@ export const EditorGate = ({ documentId, currentUser }: { documentId: string; cu
     return <Spinner className="size-10" />;
   }
 
-  return <Editor documentId={documentId} currentUser={currentUser} />;
+  return <Editor documentId={documentId} currentUser={currentUser} role={role} />;
 };

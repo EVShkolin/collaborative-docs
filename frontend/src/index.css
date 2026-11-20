@@ -141,12 +141,12 @@
 }
 
 @utility dot-grid {
-    background-color: var(--color-zinc-100);
-    background-image: radial-gradient(var(--color-zinc-300) 0.7px, transparent 0.7px);
-    background-size: 16px 16px;
+  background-color: var(--color-zinc-100);
+  background-image: radial-gradient(var(--color-zinc-300) 0.7px, transparent 0.7px);
+  background-size: 16px 16px;
 
-    @variant dark {
-        background-color: var(--color-zinc-950);
-        background-image: radial-gradient(var(--color-zinc-800) 0.7px, transparent 0.7px);
-    }
+  @variant dark {
+    background-color: var(--color-zinc-950);
+    background-image: radial-gradient(var(--color-zinc-800) 0.7px, transparent 0.7px);
+  }
 }

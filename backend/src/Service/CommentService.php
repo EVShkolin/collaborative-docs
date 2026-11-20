@@ -16,7 +16,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Uid\Uuid;
 
-// todo role check for save, findAll, delete
 readonly class CommentService
 {
     public function __construct(
@@ -87,7 +86,7 @@ readonly class CommentService
             ?? throw new ObjectNotFoundException('Comment', $commentId);
 
         if ($comment->getCreator()->getId() !== $this->userContext->getUserId()
-            || $comment->getDocument()->getOwner()->getId() !== $this->userContext->getUserId())
+            && $comment->getDocument()->getOwner()->getId() !== $this->userContext->getUserId())
             throw new AccessDeniedException('Only creator or document owner can delete comments');
 
         $this->em->remove($comment);

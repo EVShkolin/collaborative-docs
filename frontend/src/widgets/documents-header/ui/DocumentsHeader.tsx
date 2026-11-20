@@ -1,4 +1,4 @@
-import { DocumentsSearch } from '@/features/documents-search/ui/DocumentsSearch.tsx';
+import { DocumentsSearch } from '@/features/documents-search';
 import { Bell, Moon, Sun } from 'lucide-react';
 import { Button } from '@/shared/ui/button.tsx';
 import { UserAvatar } from '@/entities/user/ui/UserAvatar.tsx';

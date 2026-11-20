@@ -30,7 +30,7 @@ export const DocumentPage = () => {
         token={accessQuery.data.token}
         onStateless={handleStatelessMessage}
       >
-        <EditorGate documentId={documentId} currentUser={userQuery.data} />
+        <EditorGate documentId={documentId} currentUser={userQuery.data} role={accessQuery.data.role} />
       </HocuspocusRoom>
     </HocuspocusProviderWebsocketComponent>
   );

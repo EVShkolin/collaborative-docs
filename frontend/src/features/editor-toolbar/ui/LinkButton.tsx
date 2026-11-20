@@ -9,7 +9,7 @@ import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
 import { useLinkEditor } from '@/features/editor-toolbar/hook/useLinkEditor.ts';
 
-export const LinkButton = () => {
+export const LinkButton = ({ disabled }: { disabled: boolean }) => {
   const [editor] = useLexicalComposerContext();
   const { state, open, close, save } = useLinkEditor();
   const [isActive, setIsActive] = useState(false);
@@ -63,6 +63,7 @@ export const LinkButton = () => {
         <TooltipTrigger
           render={
             <Toggle
+              disabled={disabled}
               size="sm"
               pressed={isActive}
               onPressedChange={open}

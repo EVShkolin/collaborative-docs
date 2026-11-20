@@ -1,10 +1,5 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import {
-  $getSelection,
-  $isElementNode,
-  $isRangeSelection,
-  FORMAT_ELEMENT_COMMAND,
-} from 'lexical';
+import { $getSelection, $isElementNode, $isRangeSelection, FORMAT_ELEMENT_COMMAND } from 'lexical';
 import { useEffect, useState } from 'react';
 import { AlignLeft, AlignCenter, AlignRight, AlignJustify } from 'lucide-react';
 import { Toggle } from '@/shared/ui/toggle';
@@ -19,7 +14,7 @@ const ALIGNS: { align: AlignType; label: string; Icon: typeof AlignLeft }[] = [
   { align: 'justify', label: 'По ширине', Icon: AlignJustify },
 ];
 
-export const TextAlignButtons = () => {
+export const TextAlignButtons = ({ disabled }: { disabled: boolean }) => {
   const [editor] = useLexicalComposerContext();
   const [activeAlign, setActiveAlign] = useState<AlignType>('left');
 
@@ -58,6 +53,7 @@ export const TextAlignButtons = () => {
           <TooltipTrigger
             render={
               <Toggle
+                disabled={disabled}
                 size="sm"
                 pressed={activeAlign === align}
                 onPressedChange={() => applyAlign(align)}
