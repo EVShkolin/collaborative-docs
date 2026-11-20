@@ -46,16 +46,8 @@ export const LinkHoverCard = () => {
 
   return (
     <>
-      <NodeEventPlugin
-        nodeType={LinkNode}
-        eventType="mouseenter"
-        eventListener={handleMouseEnter}
-      />
-      <NodeEventPlugin
-        nodeType={LinkNode}
-        eventType="mouseleave"
-        eventListener={scheduleHide}
-      />
+      <NodeEventPlugin nodeType={LinkNode} eventType="mouseenter" eventListener={handleMouseEnter} />
+      <NodeEventPlugin nodeType={LinkNode} eventType="mouseleave" eventListener={scheduleHide} />
 
       {hovered && (
         <div

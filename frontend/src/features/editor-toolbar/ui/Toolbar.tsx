@@ -10,24 +10,24 @@ import { FontDropdown } from '@/features/editor-toolbar/ui/FontDropdown.tsx';
 import { ExtensionComponent } from '@lexical/react/ExtensionComponent';
 import { PagesReactExtension } from '@/features/document-pages';
 
-export const Toolbar = () => {
+export const Toolbar = ({ disabled }: { disabled: boolean }) => {
   return (
     <div className="scrollbar-none flex h-12 items-center gap-0.5 overflow-x-auto border-t px-3 border-border">
-      <HistoryButtons />
-      <Separator orientation='vertical' className="h-5 my-auto mx-1.5" />
-      <TextStyleDropdown />
-      <Separator orientation='vertical' className="h-5 my-auto mx-1.5" />
-      <FontDropdown />
-      <Separator orientation='vertical' className="h-5 my-auto mx-1.5" />
-      <FontSizeGroup />
-      <Separator orientation='vertical' className="h-5 my-auto mx-1.5" />
-      <TextFormatButtons />
-      <Separator orientation='vertical' className="h-5 my-auto mx-1.5" />
-      <TextAlignButtons />
-      <Separator orientation='vertical' className="h-5 my-auto mx-1.5" />
-      <ListButtons />
-      <LinkButton />
-      <ExtensionComponent lexical:extension={PagesReactExtension} />
+      <HistoryButtons disabled={disabled} />
+      <Separator orientation="vertical" className="h-5 my-auto mx-1.5" />
+      <TextStyleDropdown disabled={disabled} />
+      <Separator orientation="vertical" className="h-5 my-auto mx-1.5" />
+      <FontDropdown disabled={disabled} />
+      <Separator orientation="vertical" className="h-5 my-auto mx-1.5" />
+      <FontSizeGroup disabled={disabled} />
+      <Separator orientation="vertical" className="h-5 my-auto mx-1.5" />
+      <TextFormatButtons disabled={disabled} />
+      <Separator orientation="vertical" className="h-5 my-auto mx-1.5" />
+      <TextAlignButtons disabled={disabled} />
+      <Separator orientation="vertical" className="h-5 my-auto mx-1.5" />
+      <ListButtons disabled={disabled} />
+      <LinkButton disabled={disabled} />
+      <ExtensionComponent lexical:extension={PagesReactExtension} disabled={disabled} />
     </div>
   );
 };

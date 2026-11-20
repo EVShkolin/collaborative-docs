@@ -8,7 +8,7 @@ type DocumentTitleInputProps = {
   readOnly?: boolean;
 };
 
-export const DocumentTitleInput = ({ id, initialTitle, readOnly = false }: DocumentTitleInputProps) => {
+export const DocumentTitleInput = ({ id, initialTitle, readOnly = true }: DocumentTitleInputProps) => {
   const [title, setTitle] = useState<string>(initialTitle);
   const { mutate: updateDocument } = useUpdateDocument(id);
   const savedTitleRef = useRef<string>(initialTitle);
@@ -27,7 +27,7 @@ export const DocumentTitleInput = ({ id, initialTitle, readOnly = false }: Docum
 
   return (
     <Input
-      className={`max-w-100 border-none ${!readOnly && 'hover:bg-accent dark:hover:bg-accent'} bg-card dark:bg-card shadow-none`}
+      className={`max-w-100 border-none ${!readOnly && 'hover:bg-accent dark:hover:bg-accent'} bg-card shadow-none`}
       value={title}
       onChange={(e) => setTitle(e.target.value)}
       onBlur={saveTitle}

@@ -71,7 +71,7 @@ readonly class ParticipantService
         $this->log->debug("Removing user $participantId from doc $documentId");
 
         $participant = $this->em->find(DocumentParticipant::class, $participantId);
-        if ($participant === null || !$participant->getId()->equals($documentId)) {
+        if ($participant === null || !$participant->getId()->equals($participantId)) {
             throw new ObjectNotFoundException('Participant', $participantId->toString());
         }
 

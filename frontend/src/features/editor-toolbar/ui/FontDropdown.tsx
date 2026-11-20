@@ -28,7 +28,7 @@ const FONT_FAMILIES: [string, string][] = [
   ['Lobster', 'Lobster'],
 ];
 
-export const FontDropdown = () => {
+export const FontDropdown = ({ disabled }: { disabled: boolean }) => {
   const [editor] = useLexicalComposerContext();
   const [fontFamily, setFontFamily] = useState(DEFAULT_FONT);
 
@@ -63,7 +63,7 @@ export const FontDropdown = () => {
   const currentLabel = FONT_FAMILIES.find(([, value]) => value === fontFamily)?.[0] ?? fontFamily;
 
   return (
-    <DropdownMenu>
+    <DropdownMenu disabled={disabled}>
       <DropdownMenuTrigger
         render={
           <Button variant="ghost" size="sm" className="w-40 justify-between gap-1 text-sm font-normal">

@@ -18,7 +18,7 @@ const MAX_SIZE = 96;
 const DEFAULT_SIZE = 16;
 const PRESETS = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64, 72, 96];
 
-export const FontSizeGroup = () => {
+export const FontSizeGroup = ({ disabled }: { disabled: boolean }) => {
   const [editor] = useLexicalComposerContext();
   const [size, setSize] = useState(DEFAULT_SIZE);
   const [inputValue, setInputValue] = useState(String(DEFAULT_SIZE));
@@ -58,7 +58,7 @@ export const FontSizeGroup = () => {
         size="icon"
         className="size-8"
         onClick={() => applySize(size - 1)}
-        disabled={size <= MIN_SIZE}
+        disabled={size <= MIN_SIZE || disabled}
         aria-label="Уменьшить размер шрифта"
       >
         <Minus className="size-4" />
@@ -73,12 +73,14 @@ export const FontSizeGroup = () => {
         }}
         inputValue={inputValue}
         onInputValueChange={setInputValue}
+        disabled={disabled}
       >
         <ComboboxInput
           className="h-8 w-12 text-center text-sm"
           placeholder="16"
           showTrigger={false}
           aria-label="Размер шрифта"
+          disabled={disabled}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
@@ -91,7 +93,7 @@ export const FontSizeGroup = () => {
           }}
         />
 
-        <ComboboxContent className='w-12 min-w-0'>
+        <ComboboxContent className="w-12 min-w-0">
           <ComboboxEmpty>Нет совпадений</ComboboxEmpty>
           <ComboboxList>
             {(preset) => (
@@ -112,7 +114,7 @@ export const FontSizeGroup = () => {
         size="icon"
         className="size-8"
         onClick={() => applySize(size + 1)}
-        disabled={size >= MAX_SIZE}
+        disabled={size >= MAX_SIZE || disabled}
         aria-label="Увеличить размер шрифта"
       >
         <Plus className="size-4" />

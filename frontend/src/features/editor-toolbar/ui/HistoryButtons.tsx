@@ -6,13 +6,13 @@ import { Button } from '@/shared/ui/button';
 import { Redo, Undo } from 'lucide-react';
 import { useHocuspocusEvent } from '@hocuspocus/provider-react';
 
-export const HistoryButtons = () => {
+export const HistoryButtons = ({ disabled }: { disabled: boolean }) => {
   const [editor] = useLexicalComposerContext();
   const canUndo = useExtensionSignalValue(HistoryExtension, 'canUndo');
   const canRedo = useExtensionSignalValue(HistoryExtension, 'canRedo');
 
   useHocuspocusEvent('synced', () => {
-    setTimeout(() => editor.dispatchCommand(CLEAR_HISTORY_COMMAND, undefined), 0)
+    setTimeout(() => editor.dispatchCommand(CLEAR_HISTORY_COMMAND, undefined), 0);
   });
 
   return (
@@ -21,7 +21,7 @@ export const HistoryButtons = () => {
         variant="ghost"
         size="icon"
         onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
-        disabled={!canUndo}
+        disabled={!canUndo || disabled}
         aria-label="Отменить"
       >
         <Undo />
@@ -30,7 +30,7 @@ export const HistoryButtons = () => {
         variant="ghost"
         size="icon"
         onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
-        disabled={!canRedo}
+        disabled={!canRedo || disabled}
         aria-label="Повторить"
       >
         <Redo />

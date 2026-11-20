@@ -23,7 +23,7 @@ const BLOCK_LABELS: Record<BlockType, string> = {
   h3: 'Заголовок 3',
 };
 
-export const TextStyleDropdown = () => {
+export const TextStyleDropdown = ({ disabled }: { disabled: boolean }) => {
   const [editor] = useLexicalComposerContext();
   const [blockType, setBlockType] = useState<BlockType>('paragraph');
 
@@ -61,7 +61,7 @@ export const TextStyleDropdown = () => {
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu disabled={disabled}>
       <DropdownMenuTrigger
         render={
           <Button variant="ghost" size="sm" className="gap-1 text-sm font-normal w-30">

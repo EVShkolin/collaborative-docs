@@ -14,7 +14,7 @@ const FORMATS: { format: TextFormat; label: string; Icon: typeof Bold }[] = [
   { format: 'strikethrough', label: 'Зачёркнутый', Icon: Strikethrough },
 ];
 
-export const TextFormatButtons = () => {
+export const TextFormatButtons = ({ disabled }: { disabled: boolean }) => {
   const [editor] = useLexicalComposerContext();
   const [active, setActive] = useState<Record<TextFormat, boolean>>({
     bold: false,
@@ -50,6 +50,7 @@ export const TextFormatButtons = () => {
           <TooltipTrigger
             render={
               <Toggle
+                disabled={disabled}
                 size="sm"
                 pressed={active[format]}
                 onPressedChange={() => toggleFormat(format)}

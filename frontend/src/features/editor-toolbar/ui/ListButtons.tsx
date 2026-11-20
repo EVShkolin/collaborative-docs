@@ -18,7 +18,7 @@ const LISTS: { kind: ListKind; label: string; Icon: typeof List }[] = [
   { kind: 'number', label: 'Нумерованный список', Icon: ListOrdered },
 ];
 
-export const ListButtons = () => {
+export const ListButtons = ({ disabled }: { disabled: boolean }) => {
   const [editor] = useLexicalComposerContext();
   const [activeList, setActiveList] = useState<ListKind | null>(null);
 
@@ -29,10 +29,7 @@ export const ListButtons = () => {
         if (!$isRangeSelection(selection)) return;
 
         const anchorNode = selection.anchor.getNode();
-        const element =
-          anchorNode.getKey() === 'root'
-            ? null
-            : anchorNode.getTopLevelElement();
+        const element = anchorNode.getKey() === 'root' ? null : anchorNode.getTopLevelElement();
 
         if (element && $isListNode(element)) {
           const listType = element.getListType();
@@ -50,12 +47,7 @@ export const ListButtons = () => {
       return;
     }
 
-    editor.dispatchCommand(
-      kind === 'bullet'
-        ? INSERT_UNORDERED_LIST_COMMAND
-        : INSERT_ORDERED_LIST_COMMAND,
-      undefined
-    );
+    editor.dispatchCommand(kind === 'bullet' ? INSERT_UNORDERED_LIST_COMMAND : INSERT_ORDERED_LIST_COMMAND, undefined);
   };
 
   return (
@@ -65,6 +57,7 @@ export const ListButtons = () => {
           <TooltipTrigger
             render={
               <Toggle
+                disabled={disabled}
                 size="sm"
                 pressed={activeList === kind}
                 onPressedChange={() => toggleList(kind)}
