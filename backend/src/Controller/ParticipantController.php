@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DTO\Participant\ChangeRoleRequest;
 use App\DTO\Participant\ParticipantRequestDto;
 use App\DTO\Participant\ParticipantResponseDto;
 use App\Service\ParticipantService;
@@ -51,8 +52,16 @@ class ParticipantController extends AbstractController
         Uuid $documentId,
         #[MapRequestPayload] ParticipantRequestDto $dto
     ): JsonResponse {
-        $participant = $this->participantService->addParticipant($documentId, $dto);
+        $participant = $this->participantService->add($documentId, $dto);
         return $this->json($participant, Response::HTTP_CREATED);
+    }
+
+    #[Route('/{participantId}/role', name: 'v1_participants_change_role', methods: ['PATCH'])]
+    #[OA\Response(response: 200, description: 'Роль изменена')]
+    public function changeRole(Uuid $documentId, Uuid $participantId, #[MapRequestPayload] ChangeRoleRequest $dto): Response
+    {
+        $this->participantService->changeRole($documentId, $participantId, $dto->role);
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/{participantId}', name: 'v1_participants_delete', requirements: ['participantId' => Requirement::UUID], methods: ['DELETE'])]
@@ -62,7 +71,7 @@ class ParticipantController extends AbstractController
     )]
     public function removeParticipant(Uuid $documentId, Uuid $participantId): Response
     {
-        $this->participantService->removeParticipant($documentId, $participantId);
+        $this->participantService->remove($documentId, $participantId);
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
 }

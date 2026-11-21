@@ -9,5 +9,6 @@ import type { ParticipantRole } from './participantRole';
 
 export interface DocumentAccessDto {
   token: string;
+  participantId: string;
   role: ParticipantRole;
 }

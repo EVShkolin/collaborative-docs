@@ -10,9 +10,13 @@ use App\Entity\DocumentParticipant;
 use App\Enum\ParticipantRole;
 use App\Exception\ObjectNotFoundException;
 use App\Mapper\CommentMapper;
+use App\Message\Event\CommentCreatedEvent;
+use App\Message\Event\CommentDeletedEvent;
 use App\Security\UserContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpStamp;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Uid\Uuid;
 
@@ -22,6 +26,7 @@ readonly class CommentService
         private CommentMapper          $mapper,
         private UserContext            $userContext,
         private EntityManagerInterface $em,
+        private MessageBusInterface    $messageBus,
         private LoggerInterface        $log
     ) {}
 
@@ -60,6 +65,12 @@ readonly class CommentService
         $comment = $this->mapper->toEntity($dto, $document, $user);
         $this->em->persist($comment);
         $this->em->flush();
+
+        $this->messageBus->dispatch(
+            new CommentCreatedEvent($documentId, $comment->getId()),
+            [new AmqpStamp('comment.created')]
+        );
+
         return $this->mapper->toDto($comment);
     }
 
@@ -89,7 +100,14 @@ readonly class CommentService
             && $comment->getDocument()->getOwner()->getId() !== $this->userContext->getUserId())
             throw new AccessDeniedException('Only creator or document owner can delete comments');
 
+        $event = new CommentDeletedEvent($comment->getDocument()->getId(), $commentId);
+
         $this->em->remove($comment);
         $this->em->flush();
+
+        $this->messageBus->dispatch(
+            $event,
+            [new AmqpStamp('comment.deleted')]
+        );
     }
 }

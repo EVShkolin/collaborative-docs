@@ -23,6 +23,7 @@ export const useAccessDocument = (documentId: string | undefined) => {
   return useQuery({
     queryKey: ['documents', documentId, 'access'],
     queryFn: documentId ? () => getV1AccessDocument(documentId) : skipToken,
+    staleTime: 60 * 1000,
     refetchOnWindowFocus: false,
   });
 };

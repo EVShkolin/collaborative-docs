@@ -16,5 +16,14 @@ services:
       timeout: 10s
       retries: 20
 
+  rabbitmq:
+    image: rabbitmq:4-management
+    ports:
+      - "5672:5672"      # для общения с приложением
+      - "15672:15672"    # для панели управления
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
 volumes:
   pg_data:

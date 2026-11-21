@@ -66,12 +66,13 @@ readonly class DocumentService
         $wsToken =  $this->jwtEncoder->encode([
             'documentId' => $document->getId()->toString(),
             'userId' => $this->userContext->getUserId(),
+            'participantId' => $participant->getId(),
             'username' => $this->userContext->getUser()->getName(),
             'role' => $participant->getRole(),
             'exp' => time() + 60,
         ]);
 
-        return new DocumentAccessDto($wsToken, $participant->getRole());
+        return new DocumentAccessDto($wsToken, $participant->getId(), $participant->getRole());
     }
 
     public function save(DocumentRequestDto $dto): DocumentResponseDto

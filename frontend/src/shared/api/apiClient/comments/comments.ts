@@ -5,72 +5,61 @@
  * REST API для совместного редактирования документов
  * OpenAPI spec version: 1.0.0
  */
-import type { CommentRequestDto, CommentResponseDto } from '../../model';
+import type {
+  CommentRequestDto,
+  CommentResponseDto
+} from '../../model';
 
 import { customInstance } from '../../client.config';
 import type { BodyType } from '../../client.config';
 
+
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export const getComments = () => {
-  const getV1CommentsFindAllByDocument = (
+
+  export const getComments = () => {
+const getV1CommentsFindAllByDocument = (
     documentId: string,
-    options?: SecondParameter<typeof customInstance<CommentResponseDto[]>>
-  ) => {
-    return customInstance<CommentResponseDto[]>(
-      { url: `/api/v1/documents/${documentId}/comments`, method: 'GET' },
-      options
-    );
-  };
+ options?: SecondParameter<typeof customInstance<CommentResponseDto[]>>,) => {
+      return customInstance<CommentResponseDto[]>(
+      {url: `/api/v1/documents/${documentId}/comments`, method: 'GET'
+    },
+      options);
+    }
   const postV1CommentsSave = (
     documentId: string,
     commentRequestDto: BodyType<CommentRequestDto>,
-    options?: SecondParameter<typeof customInstance<CommentResponseDto>>
-  ) => {
-    return customInstance<CommentResponseDto>(
-      {
-        url: `/api/v1/documents/${documentId}/comments`,
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        data: commentRequestDto,
-      },
-      options
-    );
-  };
+ options?: SecondParameter<typeof customInstance<CommentResponseDto>>,) => {
+      return customInstance<CommentResponseDto>(
+      {url: `/api/v1/documents/${documentId}/comments`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: commentRequestDto
+    },
+      options);
+    }
   const putV1CommentsUpdate = (
     documentId: string,
     id: string,
     commentRequestDto: BodyType<CommentRequestDto>,
-    options?: SecondParameter<typeof customInstance<CommentResponseDto>>
-  ) => {
-    return customInstance<CommentResponseDto>(
-      {
-        url: `/api/v1/documents/${documentId}/comments/${id}`,
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        data: commentRequestDto,
-      },
-      options
-    );
-  };
+ options?: SecondParameter<typeof customInstance<CommentResponseDto>>,) => {
+      return customInstance<CommentResponseDto>(
+      {url: `/api/v1/documents/${documentId}/comments/${id}`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: commentRequestDto
+    },
+      options);
+    }
   const deleteV1CommentsDelete = (
     documentId: string,
     id: string,
-    options?: SecondParameter<typeof customInstance<void>>
-  ) => {
-    return customInstance<void>({ url: `/api/v1/documents/${documentId}/comments/${id}`, method: 'DELETE' }, options);
-  };
-  return { getV1CommentsFindAllByDocument, postV1CommentsSave, putV1CommentsUpdate, deleteV1CommentsDelete };
-};
-export type GetV1CommentsFindAllByDocumentResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getComments>['getV1CommentsFindAllByDocument']>>
->;
-export type PostV1CommentsSaveResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getComments>['postV1CommentsSave']>>
->;
-export type PutV1CommentsUpdateResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getComments>['putV1CommentsUpdate']>>
->;
-export type DeleteV1CommentsDeleteResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getComments>['deleteV1CommentsDelete']>>
->;
+ options?: SecondParameter<typeof customInstance<void>>,) => {
+      return customInstance<void>(
+      {url: `/api/v1/documents/${documentId}/comments/${id}`, method: 'DELETE'
+    },
+      options);
+    }
+  return {getV1CommentsFindAllByDocument,postV1CommentsSave,putV1CommentsUpdate,deleteV1CommentsDelete}};
+export type GetV1CommentsFindAllByDocumentResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getComments>['getV1CommentsFindAllByDocument']>>>
+export type PostV1CommentsSaveResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getComments>['postV1CommentsSave']>>>
+export type PutV1CommentsUpdateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getComments>['putV1CommentsUpdate']>>>
+export type DeleteV1CommentsDeleteResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getComments>['deleteV1CommentsDelete']>>>

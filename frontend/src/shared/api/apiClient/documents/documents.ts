@@ -5,82 +5,77 @@
  * REST API для совместного редактирования документов
  * OpenAPI spec version: 1.0.0
  */
-import type { DocumentAccessDto, DocumentRequestDto, DocumentResponseDto } from '../../model';
+import type {
+  DocumentAccessDto,
+  DocumentRequestDto,
+  DocumentResponseDto
+} from '../../model';
 
 import { customInstance } from '../../client.config';
 import type { BodyType } from '../../client.config';
 
+
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export const getDocuments = () => {
-  const getV1DocumentsFindAll = (options?: SecondParameter<typeof customInstance<DocumentResponseDto[]>>) => {
-    return customInstance<DocumentResponseDto[]>({ url: `/api/v1/documents`, method: 'GET' }, options);
-  };
+
+  export const getDocuments = () => {
+const getV1DocumentsFindAll = (
+
+ options?: SecondParameter<typeof customInstance<DocumentResponseDto[]>>,) => {
+      return customInstance<DocumentResponseDto[]>(
+      {url: `/api/v1/documents`, method: 'GET'
+    },
+      options);
+    }
   const postV1DocumentsSave = (
     documentRequestDto: BodyType<DocumentRequestDto>,
-    options?: SecondParameter<typeof customInstance<DocumentResponseDto>>
-  ) => {
-    return customInstance<DocumentResponseDto>(
-      {
-        url: `/api/v1/documents`,
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        data: documentRequestDto,
-      },
-      options
-    );
-  };
+ options?: SecondParameter<typeof customInstance<DocumentResponseDto>>,) => {
+      return customInstance<DocumentResponseDto>(
+      {url: `/api/v1/documents`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: documentRequestDto
+    },
+      options);
+    }
   const getV1DocumentsFindById = (
     id: string,
-    options?: SecondParameter<typeof customInstance<DocumentResponseDto>>
-  ) => {
-    return customInstance<DocumentResponseDto>({ url: `/api/v1/documents/${id}`, method: 'GET' }, options);
-  };
+ options?: SecondParameter<typeof customInstance<DocumentResponseDto>>,) => {
+      return customInstance<DocumentResponseDto>(
+      {url: `/api/v1/documents/${id}`, method: 'GET'
+    },
+      options);
+    }
   const putV1DocumentsUpdate = (
     id: string,
     documentRequestDto: BodyType<DocumentRequestDto>,
-    options?: SecondParameter<typeof customInstance<DocumentResponseDto>>
-  ) => {
-    return customInstance<DocumentResponseDto>(
-      {
-        url: `/api/v1/documents/${id}`,
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        data: documentRequestDto,
-      },
-      options
-    );
-  };
-  const deleteV1DocumentsDelete = (id: string, options?: SecondParameter<typeof customInstance<void>>) => {
-    return customInstance<void>({ url: `/api/v1/documents/${id}`, method: 'DELETE' }, options);
-  };
-  const getV1AccessDocument = (id: string, options?: SecondParameter<typeof customInstance<DocumentAccessDto>>) => {
-    return customInstance<DocumentAccessDto>({ url: `/api/v1/documents/${id}/access`, method: 'GET' }, options);
-  };
-  return {
-    getV1DocumentsFindAll,
-    postV1DocumentsSave,
-    getV1DocumentsFindById,
-    putV1DocumentsUpdate,
-    deleteV1DocumentsDelete,
-    getV1AccessDocument,
-  };
-};
-export type GetV1DocumentsFindAllResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getDocuments>['getV1DocumentsFindAll']>>
->;
-export type PostV1DocumentsSaveResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getDocuments>['postV1DocumentsSave']>>
->;
-export type GetV1DocumentsFindByIdResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getDocuments>['getV1DocumentsFindById']>>
->;
-export type PutV1DocumentsUpdateResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getDocuments>['putV1DocumentsUpdate']>>
->;
-export type DeleteV1DocumentsDeleteResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getDocuments>['deleteV1DocumentsDelete']>>
->;
-export type GetV1AccessDocumentResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getDocuments>['getV1AccessDocument']>>
->;
+ options?: SecondParameter<typeof customInstance<DocumentResponseDto>>,) => {
+      return customInstance<DocumentResponseDto>(
+      {url: `/api/v1/documents/${id}`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: documentRequestDto
+    },
+      options);
+    }
+  const deleteV1DocumentsDelete = (
+    id: string,
+ options?: SecondParameter<typeof customInstance<void>>,) => {
+      return customInstance<void>(
+      {url: `/api/v1/documents/${id}`, method: 'DELETE'
+    },
+      options);
+    }
+  const getV1AccessDocument = (
+    id: string,
+ options?: SecondParameter<typeof customInstance<DocumentAccessDto>>,) => {
+      return customInstance<DocumentAccessDto>(
+      {url: `/api/v1/documents/${id}/access`, method: 'GET'
+    },
+      options);
+    }
+  return {getV1DocumentsFindAll,postV1DocumentsSave,getV1DocumentsFindById,putV1DocumentsUpdate,deleteV1DocumentsDelete,getV1AccessDocument}};
+export type GetV1DocumentsFindAllResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocuments>['getV1DocumentsFindAll']>>>
+export type PostV1DocumentsSaveResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocuments>['postV1DocumentsSave']>>>
+export type GetV1DocumentsFindByIdResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocuments>['getV1DocumentsFindById']>>>
+export type PutV1DocumentsUpdateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocuments>['putV1DocumentsUpdate']>>>
+export type DeleteV1DocumentsDeleteResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocuments>['deleteV1DocumentsDelete']>>>
+export type GetV1AccessDocumentResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocuments>['getV1AccessDocument']>>>

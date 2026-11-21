@@ -1,0 +1,58 @@
+framework:
+  messenger:
+    # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
+    # failure_transport: failed
+    serializer:
+      default_serializer: messenger.transport.symfony_serializer
+      symfony_serializer:
+        format: json
+    transports:
+      # https://symfony.com/doc/current/messenger.html#transport-configuration
+      #             async: '%env(MESSENGER_TRANSPORT_DSN)%'
+      # failed: 'doctrine://default?queue_name=failed'
+      #            sync: 'sync://'
+      participant_events:
+        dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+        options:
+          exchange:
+            name: app_events
+            type: topic
+          queues:
+            participant_queue:
+              binding_keys: [ 'participant.#' ]
+        retry_strategy:
+          max_retries: 3
+          delay: 1000
+          multiplier: 2
+          max_delay: 30000
+
+      comment_events:
+        dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+        options:
+          exchange:
+            name: app_events
+            type: topic
+          queues:
+            comment_queue:
+              binding_keys: [ 'comment.#' ]
+        retry_strategy:
+          max_retries: 3
+          delay: 1000
+          multiplier: 2
+          max_delay: 30000
+
+    routing:
+      # Route your messages to the transports
+      'App\Message\Event\RoleChangedEvent': participant_events
+      'App\Message\Event\ParticipantAddedEvent': participant_events
+      'App\Message\Event\ParticipantDeletedEvent': participant_events
+      'App\Message\Event\CommentCreatedEvent': comment_events
+      'App\Message\Event\CommentDeletedEvent': comment_events
+
+# when@test:
+#    framework:
+#        messenger:
+#            transports:
+#                # replace with your transport name here (e.g., my_transport: 'in-memory://')
+#                # For more Messenger testing tools, see https://github.com/zenstruck/messenger-test
+#                async: 'in-memory://'

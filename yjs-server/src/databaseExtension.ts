@@ -3,11 +3,11 @@ import { Database } from '@hocuspocus/extension-database';
 import { createPageSeed } from './document-state/createPageSeed';
 
 const pool = new Pool({
-  port: parseInt(process.env.POSTGRES_PORT!, 10),
-  host: process.env.POSTGRES_HOST!,
-  user: process.env.POSTGRES_USERNAME!,
-  password: process.env.POSTGRES_PASSWORD!,
-  database: process.env.POSTGRES_DB!,
+  port: parseInt(process.env.POSTGRES_PORT!),
+  host: process.env.POSTGRES_HOST,
+  user: process.env.POSTGRES_USERNAME,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DB,
 });
 
 export const databaseExtension = () => {

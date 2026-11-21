@@ -1,10 +1,9 @@
-import { HocuspocusProviderWebsocketComponent, HocuspocusRoom } from '@hocuspocus/provider-react';
 import { useParams } from 'react-router-dom';
 import { EditorGate } from '@/pages/document/EditorGate.tsx';
+import { DocumentRoom } from '@/pages/document/DocumentRoom.tsx';
 import { useAccessDocument } from '@/entities/document/api/queries.ts';
 import { useCurrentUser } from '@/entities/user/api/queries.ts';
 import { Spinner } from '@/shared/ui/spinner.tsx';
-import { handleStatelessMessage } from '@/features/websocket/lib/handleStatelessMessage.ts';
 
 export const DocumentPage = () => {
   const { documentId } = useParams();
@@ -23,15 +22,12 @@ export const DocumentPage = () => {
   }
 
   return (
-    <HocuspocusProviderWebsocketComponent url="/ws">
-      <HocuspocusRoom
-        flushDelay={500}
-        name={documentId}
-        token={accessQuery.data.token}
-        onStateless={handleStatelessMessage}
-      >
-        <EditorGate documentId={documentId} currentUser={userQuery.data} role={accessQuery.data.role} />
-      </HocuspocusRoom>
-    </HocuspocusProviderWebsocketComponent>
+    <DocumentRoom documentId={documentId}>
+      <EditorGate
+        documentId={documentId}
+        currentUser={userQuery.data}
+        role={accessQuery.data.role}
+      />
+    </DocumentRoom>
   );
 };

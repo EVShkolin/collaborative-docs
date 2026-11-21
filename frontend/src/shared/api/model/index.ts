@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './changeRoleRequest';
 export * from './commentRequestDto';
 export * from './commentResponseDto';
 export * from './documentAccessDto';

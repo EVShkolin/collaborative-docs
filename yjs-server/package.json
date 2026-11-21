@@ -21,6 +21,7 @@
     "jsonwebtoken": "^9.0.3",
     "lexical": "^0.53.0",
     "pg": "^8.23.1",
+    "rabbitmq-client": "^5.2.0",
     "yjs": "^13.6.33"
   },
   "devDependencies": {
