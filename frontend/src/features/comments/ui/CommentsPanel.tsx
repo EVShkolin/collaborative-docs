@@ -11,8 +11,9 @@ import { useState } from 'react';
 import { toast } from '@/shared/ui/toast.tsx';
 import { getExtensionDependencyFromEditor } from '@lexical/extension';
 import { CommentCard } from '@/features/comments/ui/CommentCard.tsx';
-import { useDocument } from '@/entities/document/api/queries.ts';
+import { useAccessDocument, useDocument } from '@/entities/document/api/queries.ts';
 import { useCurrentUser } from '@/entities/user/api/queries.ts';
+import { Textarea } from '@/shared/ui/textarea.tsx';
 
 type CommentsPanelProps = {
   documentId: string;
@@ -35,6 +36,7 @@ export const CommentsPanel = ({ documentId, isOpen, toggleOpen }: CommentsPanelP
   const { data: comments, isPending } = useComments(documentId);
   const { data: document } = useDocument(documentId);
   const { data: currentUser } = useCurrentUser();
+  const { data: access } = useAccessDocument(documentId);
   const [editor] = useLexicalComposerContext();
   const [content, setContent] = useState('');
   const createComment = useCreateComment(editor, documentId);
@@ -144,8 +146,9 @@ export const CommentsPanel = ({ documentId, isOpen, toggleOpen }: CommentsPanelP
       </div>
 
       <div className="border-t p-3">
-        <textarea
-          className="w-full resize-none rounded-lg border bg-transparent p-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        <Textarea
+          disabled={!access || access.role === 'viewer'}
+          className="resize-none"
           rows={2}
           placeholder="Напишите комментарий..."
           value={content}

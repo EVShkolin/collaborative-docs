@@ -5,33 +5,31 @@
  * REST API для совместного редактирования документов
  * OpenAPI spec version: 1.0.0
  */
-import type { PostApiV1AuthLogin200, PostApiV1AuthLoginBody } from '../../model';
+import type {
+  PostApiV1AuthLogin200,
+  PostApiV1AuthLoginBody
+} from '../../model';
 
 import { customInstance } from '../../client.config';
 import type { BodyType } from '../../client.config';
 
+
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export const getAuthentication = () => {
-  /**
-   * @summary Авторизация и получение JWT токена
-   */
-  const postApiV1AuthLogin = (
+
+  export const getAuthentication = () => {
+/**
+ * @summary Авторизация и получение JWT токена
+ */
+const postApiV1AuthLogin = (
     postApiV1AuthLoginBody: BodyType<PostApiV1AuthLoginBody>,
-    options?: SecondParameter<typeof customInstance<PostApiV1AuthLogin200>>
-  ) => {
-    return customInstance<PostApiV1AuthLogin200>(
-      {
-        url: `/api/v1/auth/login`,
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        data: postApiV1AuthLoginBody,
-      },
-      options
-    );
-  };
-  return { postApiV1AuthLogin };
-};
-export type PostApiV1AuthLoginResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getAuthentication>['postApiV1AuthLogin']>>
->;
+ options?: SecondParameter<typeof customInstance<PostApiV1AuthLogin200>>,) => {
+      return customInstance<PostApiV1AuthLogin200>(
+      {url: `/api/v1/auth/login`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: postApiV1AuthLoginBody
+    },
+      options);
+    }
+  return {postApiV1AuthLogin}};
+export type PostApiV1AuthLoginResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuthentication>['postApiV1AuthLogin']>>>

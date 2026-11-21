@@ -4,7 +4,11 @@ import { ParticipantCard } from '@/features/document-participants/ui/Participant
 import { useCurrentUser } from '@/entities/user/api/queries.ts';
 import { Skeleton } from '@/shared/ui/skeleton.tsx';
 import { useParticipants } from '@/features/document-participants/hook/useParticipants.ts';
-import type { ParticipantResponseDto } from '@/shared/api/model';
+import type { ParticipantResponseDto, ParticipantRole } from '@/shared/api/model';
+import { useDocumentOwner } from '@/features/document-owner/hook/useDocumentOwner.ts';
+import { useChangeParticipantRole } from '@/features/document-participants/hook/useChangeParticipantRole.ts';
+import { useRemoveParticipant } from '@/entities/participant/api/queries.ts';
+import { useLeaveDocument } from '@/features/document-participants/hook/useLeaveDocument.ts';
 
 type ParticipantsPanelProps = {
   documentId: string;
@@ -27,10 +31,18 @@ const ParticipantsSection = ({
   online,
   participants,
   currentUserId,
+  canManage,
+  onChangeRole,
+  onRemove,
+  onLeave,
 }: {
   online: boolean;
   participants: ParticipantResponseDto[];
   currentUserId: string;
+  canManage?: boolean;
+  onChangeRole?: (participantId: string, role: ParticipantRole) => void;
+  onRemove?: (participantId: string) => void;
+  onLeave?: (participantId: string) => void;
 }) => {
   if (participants.length === 0) return null;
 
@@ -43,6 +55,10 @@ const ParticipantsSection = ({
             participant={participant}
             currentUserId={currentUserId}
             isOnline={online}
+            canManage={canManage}
+            onChangeRole={onChangeRole}
+            onRemove={onRemove}
+            onLeave={onLeave}
           />
         ))}
       </div>
@@ -53,6 +69,11 @@ const ParticipantsSection = ({
 export const ParticipantsPanel = ({ documentId, isOpen, toggleOpen }: ParticipantsPanelProps) => {
   const { onlineParticipants, offlineParticipants, isPending } = useParticipants(documentId);
   const { data: currentUser } = useCurrentUser();
+  const { isOwner } = useDocumentOwner(documentId);
+
+  const changeRoleMutation = useChangeParticipantRole(documentId);
+  const removeMutation = useRemoveParticipant(documentId);
+  const leaveMutation = useLeaveDocument(documentId);
 
   if (!isOpen) return null;
 
@@ -87,8 +108,24 @@ export const ParticipantsPanel = ({ documentId, isOpen, toggleOpen }: Participan
           <p className="px-1 text-sm text-zinc-500">Пока никого нет</p>
         ) : (
           <>
-            <ParticipantsSection online={true} participants={onlineParticipants} currentUserId={currentUser.id} />
-            <ParticipantsSection online={false} participants={offlineParticipants} currentUserId={currentUser.id} />
+            <ParticipantsSection
+              online={true}
+              participants={onlineParticipants}
+              currentUserId={currentUser.id}
+              canManage={isOwner}
+              onChangeRole={(participantId, role) => changeRoleMutation.mutate({ participantId, role })}
+              onRemove={(participantId) => removeMutation.mutate(participantId)}
+              onLeave={(participantId) => leaveMutation.mutate(participantId)}
+            />
+            <ParticipantsSection
+              online={false}
+              participants={offlineParticipants}
+              currentUserId={currentUser.id}
+              canManage={isOwner}
+              onChangeRole={(participantId, role) => changeRoleMutation.mutate({ participantId, role })}
+              onRemove={(participantId) => removeMutation.mutate(participantId)}
+              onLeave={(participantId) => leaveMutation.mutate(participantId)}
+            />
           </>
         )}
 

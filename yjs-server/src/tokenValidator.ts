@@ -5,10 +5,11 @@ import fs from 'fs';
 interface TokenPayload {
   iat: number;
   exp: number;
-  userId: number;
+  userId: string;
+  participantId: string;
   documentId: string;
   username: string;
-  role: 'viewer' | 'commenter' | 'editor';
+  role: 'viewer' | 'commenter' | 'editor' | 'owner';
 }
 
 let cachedPublicKey: string | undefined;

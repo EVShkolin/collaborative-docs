@@ -63,3 +63,9 @@ php bin/console nelmio:apidoc:dump --format=yaml > openapi.yaml
 | `JWT_SECRET_KEY` | Путь к приватному SSL-ключу (`private.pem`), используемому для подписи токенов авторизации. | `%kernel.project_dir%/config/jwt/private.pem` | Да          |
 | `JWT_PUBLIC_KEY` | Путь к публичному SSL-ключу (`public.pem`), используемому для проверки подписи токенов.     | `%kernel.project_dir%/config/jwt/public.pem`  | Да          |
 | `JWT_PASSPHRASE` | Пароль, которым зашифрован `private.pem`.                                                   | `passphrase`                                  | Да          |
+
+### Message broker
+
+| Переменная                | Описание                                                                                                                                                                                                | По умолчанию                            | Обязательна |
+|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|-------------|
+| `MESSENGER_TRANSPORT_DSN` | DSN-строка подключения к RabbitMQ для транспорта Symfony Messenger. Формат: `amqp://USER:PASSWORD@HOST:PORT/VHOST`, где `VHOST` должен быть URL-encoded. Например, `%2f` означает виртуальный хост `/`. | `amqp://guest:guest@localhost:5672/%2f` | Да          |

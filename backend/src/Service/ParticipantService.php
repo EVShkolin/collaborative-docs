@@ -10,16 +10,24 @@ use App\Entity\User;
 use App\Enum\ParticipantRole;
 use App\Exception\ObjectNotFoundException;
 use App\Mapper\ParticipantMapper;
+use App\Message\Event\ParticipantDeletedEvent;
+use App\Message\Event\RoleChangedEvent;
+use App\Security\UserContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpStamp;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Uid\Uuid;
 
 readonly class ParticipantService
 {
     public function __construct(
         private EntityManagerInterface $em,
+        private MessageBusInterface $messageBus,
         private ParticipantMapper $mapper,
+        private UserContext $userContext,
         private LoggerInterface $log
     ) {}
 
@@ -35,7 +43,7 @@ readonly class ParticipantService
         return array_map(fn($p) => $this->mapper->toDto($p), $participants);
     }
 
-    public function addParticipant(Uuid $documentId, ParticipantRequestDto $dto): ParticipantResponseDto
+    public function add(Uuid $documentId, ParticipantRequestDto $dto): ParticipantResponseDto
     {
         $this->log->debug("Adding user $dto->email to doc $documentId");
 
@@ -66,16 +74,42 @@ readonly class ParticipantService
         return $this->mapper->toDto($participant);
     }
 
-    public function removeParticipant(Uuid $documentId, Uuid $participantId): void
+    public function changeRole(Uuid $documentId, Uuid $participantId, ParticipantRole $role): void {
+        $this->log->debug("Changing role $role->value for [$participantId]");
+
+        if ($role === ParticipantRole::OWNER) throw new ConflictHttpException('Document cannot have second owner');
+
+        $participant = $this->em->find(DocumentParticipant::class, $participantId)
+            ?? throw new ObjectNotFoundException('Participant', $participantId->toString());
+        $document = $this->em->find(Document::class, $documentId)
+            ?? throw new ObjectNotFoundException('Document', $documentId->toString());
+
+        if (!$document->getOwner()->getId()->equals($this->userContext->getUserId())) {
+            throw new AccessDeniedHttpException('Only owners of this document can change roles');
+        }
+
+        $participant->setRole($role);
+        $this->em->flush();
+
+        $this->messageBus->dispatch(
+            new RoleChangedEvent($documentId, $participantId, $role),
+            [new AmqpStamp('participant.role.changed')]
+        );
+    }
+
+    public function remove(Uuid $documentId, Uuid $participantId): void
     {
         $this->log->debug("Removing user $participantId from doc $documentId");
 
-        $participant = $this->em->find(DocumentParticipant::class, $participantId);
-        if ($participant === null || !$participant->getId()->equals($participantId)) {
-            throw new ObjectNotFoundException('Participant', $participantId->toString());
-        }
+        $participant = $this->em->find(DocumentParticipant::class, $participantId)
+            ?? throw new ObjectNotFoundException('Participant', $participantId);
 
         $this->em->remove($participant);
         $this->em->flush();
+
+        $this->messageBus->dispatch(
+            new ParticipantDeletedEvent($documentId, $participantId),
+            [new AmqpStamp('participant.deleted')]
+        );
     }
 }
