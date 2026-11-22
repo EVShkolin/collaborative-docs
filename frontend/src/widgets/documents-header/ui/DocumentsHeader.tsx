@@ -1,11 +1,12 @@
 import { DocumentsSearch } from '@/features/documents-search';
-import { Bell, Moon, Sun } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { Button } from '@/shared/ui/button.tsx';
 import { UserAvatar } from '@/entities/user/ui/UserAvatar.tsx';
 import { useTheme } from '@/app/providers/theme/ThemeContext.ts';
 import { LogoIcon } from '@/shared/images/LogoIcon.tsx';
 import { useCurrentUser } from '@/entities/user/api/queries.ts';
 import { Skeleton } from '@/shared/ui/skeleton.tsx';
+import { InvitationPanel } from '@/features/invitations/ui/InvitationPanel.tsx';
 
 export const DocumentsHeader = () => {
   const { theme, toggleTheme } = useTheme();
@@ -28,9 +29,7 @@ export const DocumentsHeader = () => {
           <Button variant="ghost" onClick={toggleTheme} className="text-muted-foreground hover:text-accent-foreground">
             {theme === 'dark' ? <Sun /> : <Moon />}
           </Button>
-          <Button variant="ghost" className="text-muted-foreground hover:text-accent-foreground">
-            <Bell />
-          </Button>
+          <InvitationPanel />
 
           {!currentUser ? (
             <Skeleton className="rounded-full size-10" />

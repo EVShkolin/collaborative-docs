@@ -7,7 +7,6 @@
  */
 import type {
   ChangeRoleRequest,
-  ParticipantRequestDto,
   ParticipantResponseDto
 } from '../../model';
 
@@ -24,17 +23,6 @@ const getV1ParticipantsFindAllByDocument = (
  options?: SecondParameter<typeof customInstance<ParticipantResponseDto[]>>,) => {
       return customInstance<ParticipantResponseDto[]>(
       {url: `/api/v1/documents/${documentId}/participants`, method: 'GET'
-    },
-      options);
-    }
-  const postV1ParticipantsAdd = (
-    documentId: string,
-    participantRequestDto: BodyType<ParticipantRequestDto>,
- options?: SecondParameter<typeof customInstance<ParticipantResponseDto>>,) => {
-      return customInstance<ParticipantResponseDto>(
-      {url: `/api/v1/documents/${documentId}/participants`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: participantRequestDto
     },
       options);
     }
@@ -59,8 +47,7 @@ const getV1ParticipantsFindAllByDocument = (
     },
       options);
     }
-  return {getV1ParticipantsFindAllByDocument,postV1ParticipantsAdd,patchV1ParticipantsChangeRole,deleteV1ParticipantsDelete}};
+  return {getV1ParticipantsFindAllByDocument,patchV1ParticipantsChangeRole,deleteV1ParticipantsDelete}};
 export type GetV1ParticipantsFindAllByDocumentResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocumentParticipants>['getV1ParticipantsFindAllByDocument']>>>
-export type PostV1ParticipantsAddResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocumentParticipants>['postV1ParticipantsAdd']>>>
 export type PatchV1ParticipantsChangeRoleResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocumentParticipants>['patchV1ParticipantsChangeRole']>>>
 export type DeleteV1ParticipantsDeleteResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getDocumentParticipants>['deleteV1ParticipantsDelete']>>>
