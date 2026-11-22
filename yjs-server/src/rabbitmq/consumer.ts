@@ -1,6 +1,12 @@
 import { AsyncMessage, Connection } from 'rabbitmq-client';
 import { Server } from '@hocuspocus/server';
-import { CommentCreatedEvent, CommentDeletedEvent, ParticipantDeletedEvent, RoleChangedEvent } from './messages';
+import {
+  CommentCreatedEvent,
+  CommentDeletedEvent,
+  ParticipantAddedEvent,
+  ParticipantDeletedEvent,
+  RoleChangedEvent,
+} from './messages';
 import { UserContext } from '../server';
 
 export const createRabbitmqConnection = (url: string): Connection => {
@@ -26,6 +32,7 @@ export const registerConsumers = (rabbit: Connection, server: Server) => {
           handleParticipantsRoleChanged(msg, server);
           break;
         case 'participant.added':
+          handleParticipantAdded(msg, server);
           break;
         case 'participant.deleted':
           handleParticipantDeleted(msg, server);
@@ -81,6 +88,20 @@ const handleParticipantsRoleChanged = (msg: AsyncMessage, server: Server) => {
       documentId: event.documentId,
       participantId: event.participantId,
       role: event.role,
+    })
+  );
+};
+
+const handleParticipantAdded = (msg: AsyncMessage, server: Server) => {
+  const event = msg.body as ParticipantAddedEvent;
+  const document = server.hocuspocus.documents.get(event.documentId);
+  if (!document) return;
+
+  document.broadcastStateless(
+    JSON.stringify({
+      type: 'participant-added',
+      documentId: event.documentId,
+      participant: event.participant,
     })
   );
 };

@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\DTO\Participant\ParticipantRequestDto;
 use App\DTO\Participant\ParticipantResponseDto;
 use App\Entity\Document;
 use App\Entity\DocumentParticipant;
@@ -10,6 +9,7 @@ use App\Entity\User;
 use App\Enum\ParticipantRole;
 use App\Exception\ObjectNotFoundException;
 use App\Mapper\ParticipantMapper;
+use App\Message\Event\ParticipantAddedEvent;
 use App\Message\Event\ParticipantDeletedEvent;
 use App\Message\Event\RoleChangedEvent;
 use App\Security\UserContext;
@@ -43,15 +43,19 @@ readonly class ParticipantService
         return array_map(fn($p) => $this->mapper->toDto($p), $participants);
     }
 
-    public function add(Uuid $documentId, ParticipantRequestDto $dto): ParticipantResponseDto
+    public function add(Uuid $documentId, string $email, ParticipantRole $role): ParticipantResponseDto
     {
-        $this->log->debug("Adding user $dto->email to doc $documentId");
+        $this->log->debug("Adding user $email to doc $documentId");
+
+        if ($role === ParticipantRole::OWNER) {
+            throw new ConflictHttpException('Document cannot have second owner');
+        }
 
         $document = $this->em->find(Document::class, $documentId)
             ?? throw new ObjectNotFoundException('Document', $documentId->toString());
 
-        $user = $this->em->getRepository(User::class)->findOneBy(['email' => $dto->email])
-            ?? throw new ObjectNotFoundException('User', $dto->email);
+        $user = $this->em->getRepository(User::class)->findOneBy(['email' => $email])
+            ?? throw new ObjectNotFoundException('User', $email);
 
         if ($document->getOwner()->getId()->equals($user->getId())) {
             throw new ConflictHttpException('User is already the owner of this document.');
@@ -66,12 +70,19 @@ readonly class ParticipantService
             throw new ConflictHttpException('User is already a participant.');
         }
 
-        $participant = new DocumentParticipant($user, $document);
+        $participant = new DocumentParticipant($user, $document, $role);
 
         $this->em->persist($participant);
         $this->em->flush();
 
-        return $this->mapper->toDto($participant);
+        $participantDto = $this->mapper->toDto($participant);
+
+        $this->messageBus->dispatch(
+            new ParticipantAddedEvent($documentId->toString(), $participantDto),
+            [new AmqpStamp('participant.added')]
+        );
+
+        return $participantDto;
     }
 
     public function changeRole(Uuid $documentId, Uuid $participantId, ParticipantRole $role): void {

@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\DTO\Participant\ChangeRoleRequest;
-use App\DTO\Participant\ParticipantRequestDto;
 use App\DTO\Participant\ParticipantResponseDto;
 use App\Service\ParticipantService;
 use Nelmio\ApiDocBundle\Attribute\Model;
@@ -40,20 +39,6 @@ class ParticipantController extends AbstractController
     {
         $participants = $this->participantService->findAllByDocument($documentId);
         return $this->json($participants);
-    }
-
-    #[Route('', name: 'v1_participants_add', methods: ['POST'])]
-    #[OA\Response(
-        response: 201,
-        description: 'Участник успешно добавлен',
-        content: new OA\JsonContent(ref: new Model(type: ParticipantResponseDto::class))
-    )]
-    public function addParticipant(
-        Uuid $documentId,
-        #[MapRequestPayload] ParticipantRequestDto $dto
-    ): JsonResponse {
-        $participant = $this->participantService->add($documentId, $dto);
-        return $this->json($participant, Response::HTTP_CREATED);
     }
 
     #[Route('/{participantId}/role', name: 'v1_participants_change_role', methods: ['PATCH'])]
