@@ -26,6 +26,8 @@ export const handleStatelessMessage = ({ payload }: onStatelessParameters, callb
       } else {
         queryClient.invalidateQueries({ queryKey: ['participants', data.documentId] });
       }
+    } else if (data.type === 'participant-added') {
+      queryClient.invalidateQueries({ queryKey: ['participants', data.documentId] });
     }
   } catch (error) {
     console.error(error);

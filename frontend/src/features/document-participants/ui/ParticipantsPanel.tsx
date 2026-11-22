@@ -1,5 +1,5 @@
 import { Button } from '@/shared/ui/button';
-import { Plus, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { ParticipantCard } from '@/features/document-participants/ui/ParticipantCard.tsx';
 import { useCurrentUser } from '@/entities/user/api/queries.ts';
 import { Skeleton } from '@/shared/ui/skeleton.tsx';
@@ -9,6 +9,7 @@ import { useDocumentOwner } from '@/features/document-owner/hook/useDocumentOwne
 import { useChangeParticipantRole } from '@/features/document-participants/hook/useChangeParticipantRole.ts';
 import { useRemoveParticipant } from '@/entities/participant/api/queries.ts';
 import { useLeaveDocument } from '@/features/document-participants/hook/useLeaveDocument.ts';
+import { InviteParticipantButton } from '@/features/invitations/ui/InviteParticipantButton.tsx';
 
 type ParticipantsPanelProps = {
   documentId: string;
@@ -129,10 +130,7 @@ export const ParticipantsPanel = ({ documentId, isOpen, toggleOpen }: Participan
           </>
         )}
 
-        <Button className="mt-3 w-full" variant="outline">
-          <Plus />
-          Пригласить
-        </Button>
+        {isOwner && <InviteParticipantButton documentId={documentId} />}
       </div>
     </aside>
   );

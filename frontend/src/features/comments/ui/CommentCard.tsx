@@ -5,15 +5,7 @@ import { Trash2 } from 'lucide-react';
 import { UserAvatar } from '@/entities/user/ui/UserAvatar.tsx';
 import type { CommentResponseDto, UserResponseDto } from '@/shared/api/model';
 import { getCommentPermissions } from '@/features/comments/hook/useCommentPermissions';
-
-const formatDate = (iso: string): string => {
-  return new Date(iso).toLocaleString('ru-RU', {
-    day: 'numeric',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-};
+import { formatDate } from '@/shared/util/timeFormat.ts';
 
 type CommentCardProps = {
   comment: CommentResponseDto;
