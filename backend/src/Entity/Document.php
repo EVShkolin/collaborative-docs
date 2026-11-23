@@ -25,7 +25,7 @@ class Document
     #[ORM\JoinColumn(nullable: false)]
     private User $owner;
 
-    #[ORM\OneToMany(targetEntity: DocumentParticipant::class, mappedBy: 'document')]
+    #[ORM\OneToMany(targetEntity: DocumentParticipant::class, mappedBy: 'document', cascade: ['remove'])]
     private Collection $participants;
 
     #[ORM\Column(type: 'datetimetz_immutable')]

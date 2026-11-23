@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\DTO\Document\DocumentAccessDto;
 use App\DTO\Document\DocumentRequestDto;
 use App\DTO\Document\DocumentResponseDto;
+use App\DTO\Document\DocumentWithParticipantDto;
 use App\Entity\Document;
 use App\Security\Voter\DocumentVoter;
 use App\Service\DocumentService;
@@ -34,7 +35,7 @@ class DocumentController extends AbstractController
         description: 'Список всех доступных пользователю документов',
         content: new OA\JsonContent(
             type: 'array',
-            items: new OA\Items(ref: new Model(type: DocumentResponseDto::class))
+            items: new OA\Items(ref: new Model(type: DocumentWithParticipantDto::class))
         )
     )]
     public function findAll(): JsonResponse
@@ -46,7 +47,7 @@ class DocumentController extends AbstractController
     #[OA\Response(
         response: 200,
         description: 'Получить документ по ID',
-        content: new OA\JsonContent(ref: new Model(type: DocumentResponseDto::class))
+        content: new OA\JsonContent(ref: new Model(type: DocumentWithParticipantDto::class))
     )]
     public function findById(Uuid $id): JsonResponse
     {
@@ -68,7 +69,7 @@ class DocumentController extends AbstractController
     #[OA\Response(
         response: 201,
         description: 'Документ успешно создан',
-        content: new OA\JsonContent(ref: new Model(type: DocumentResponseDto::class))
+        content: new OA\JsonContent(ref: new Model(type: DocumentWithParticipantDto::class))
     )]
     public function save(#[MapRequestPayload] DocumentRequestDto $docDto): JsonResponse
     {
@@ -79,7 +80,7 @@ class DocumentController extends AbstractController
     #[OA\Response(
         response: 200,
         description: 'Документ успешно обновлен',
-        content: new OA\JsonContent(ref: new Model(type: DocumentResponseDto::class))
+        content: new OA\JsonContent(ref: new Model(type: DocumentWithParticipantDto::class))
     )]
     public function update(Uuid $id, #[MapRequestPayload] DocumentRequestDto $docDto): JsonResponse
     {

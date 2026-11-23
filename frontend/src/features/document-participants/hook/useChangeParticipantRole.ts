@@ -17,9 +17,7 @@ export const useChangeParticipantRole = (documentId: string) => {
       const previous = queryClient.getQueryData<ParticipantResponseDto[]>(queryKey);
 
       queryClient.setQueryData<ParticipantResponseDto[]>(queryKey, (old) =>
-        old?.map((p) =>
-          p.user.id === participantId ? { ...p, role } : p
-        )
+        old?.map((p) => (p.user.id === participantId ? { ...p, role } : p))
       );
 
       return { previous };

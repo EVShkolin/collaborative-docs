@@ -1,7 +1,4 @@
-import {
-  HocuspocusProviderWebsocketComponent,
-  HocuspocusRoom,
-} from '@hocuspocus/provider-react';
+import { HocuspocusProviderWebsocketComponent, HocuspocusRoom } from '@hocuspocus/provider-react';
 import { useCallback, type ReactNode } from 'react';
 import { queryClient } from '@/shared/api/queryClient';
 import { handleStatelessMessage } from '@/features/websocket/lib/handleStatelessMessage';
@@ -21,11 +18,7 @@ type AccessDocumentResponse = { token: string; role: string };
 export const DocumentRoom = ({ documentId, children }: DocumentRoomProps) => {
   const navigate = useNavigate();
   const getToken = useCallback(async () => {
-    const cached = queryClient.getQueryData<AccessDocumentResponse>([
-      'documents',
-      documentId,
-      'access',
-    ]);
+    const cached = queryClient.getQueryData<AccessDocumentResponse>(['documents', documentId, 'access']);
     if (cached?.token) return cached.token;
 
     const fresh = await queryClient.query({
@@ -53,7 +46,6 @@ export const DocumentRoom = ({ documentId, children }: DocumentRoomProps) => {
             },
           })
         }
-
       >
         {children}
       </HocuspocusRoom>

@@ -1,8 +1,4 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getInvitations } from '@/shared/api/apiClient';
 import type { InvitationActionRequestDto, InvitationRequestDto, InvitationResponseDto } from '@/shared/api/model';
 import { toast } from '@/shared/ui/toast.tsx';
@@ -19,6 +15,10 @@ export const useInvitations = () => {
 export const useSendInvitation = () => {
   return useMutation({
     mutationFn: (payload: InvitationRequestDto) => postV1InvitationsSave(payload),
+
+    onSuccess: () => {
+      toast.add({ title: 'Приглашение отправлено', type: 'info' });
+    }
   });
 };
 
@@ -26,14 +26,11 @@ export const useInvitationAction = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, action }: { id: string, action: InvitationActionRequestDto }) =>
+    mutationFn: ({ id, action }: { id: string; action: InvitationActionRequestDto }) =>
       patchV1InvitationsUpdate(id, action),
 
     onSuccess: (_data, { id }) => {
-      queryClient.setQueryData<InvitationResponseDto[]>(
-        ['invitations'],
-        (old) => old?.filter((inv) => inv.id !== id),
-      );
+      queryClient.setQueryData<InvitationResponseDto[]>(['invitations'], (old) => old?.filter((inv) => inv.id !== id));
       queryClient.invalidateQueries({ queryKey: ['documents'] });
     },
 

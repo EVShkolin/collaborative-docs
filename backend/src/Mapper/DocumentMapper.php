@@ -4,7 +4,9 @@ namespace App\Mapper;
 
 use App\DTO\Document\DocumentRequestDto;
 use App\DTO\Document\DocumentResponseDto;
+use App\DTO\Document\DocumentWithParticipantDto;
 use App\Entity\Document;
+use App\Entity\DocumentParticipant;
 use App\Entity\User;
 
 readonly class DocumentMapper
@@ -20,6 +22,17 @@ readonly class DocumentMapper
             $doc->getTitle(),
             $this->userMapper->toDto($doc->getOwner()),
             $doc->getCreatedAt()
+        );
+    }
+
+    public function toDtoWithParticipant(Document $doc, DocumentParticipant $participant): DocumentWithParticipantDto
+    {
+        return new DocumentWithParticipantDto(
+            $doc->getId(),
+            $doc->getTitle(),
+            $participant->getId(),
+            $this->userMapper->toDto($doc->getOwner()),
+            $participant->getLastAccessedAt()
         );
     }
 

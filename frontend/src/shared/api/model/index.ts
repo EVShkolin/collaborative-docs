@@ -12,6 +12,7 @@ export * from './commentResponseDto';
 export * from './documentAccessDto';
 export * from './documentRequestDto';
 export * from './documentResponseDto';
+export * from './documentWithParticipantDto';
 export * from './getV1DocumentsGetWsToken200';
 export * from './invitationAction';
 export * from './invitationActionRequestDto';

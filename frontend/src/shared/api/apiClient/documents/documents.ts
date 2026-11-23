@@ -8,7 +8,7 @@
 import type {
   DocumentAccessDto,
   DocumentRequestDto,
-  DocumentResponseDto
+  DocumentWithParticipantDto
 } from '../../model';
 
 import { customInstance } from '../../client.config';
@@ -21,16 +21,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
   export const getDocuments = () => {
 const getV1DocumentsFindAll = (
 
- options?: SecondParameter<typeof customInstance<DocumentResponseDto[]>>,) => {
-      return customInstance<DocumentResponseDto[]>(
+ options?: SecondParameter<typeof customInstance<DocumentWithParticipantDto[]>>,) => {
+      return customInstance<DocumentWithParticipantDto[]>(
       {url: `/api/v1/documents`, method: 'GET'
     },
       options);
     }
   const postV1DocumentsSave = (
     documentRequestDto: BodyType<DocumentRequestDto>,
- options?: SecondParameter<typeof customInstance<DocumentResponseDto>>,) => {
-      return customInstance<DocumentResponseDto>(
+ options?: SecondParameter<typeof customInstance<DocumentWithParticipantDto>>,) => {
+      return customInstance<DocumentWithParticipantDto>(
       {url: `/api/v1/documents`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: documentRequestDto
@@ -39,8 +39,8 @@ const getV1DocumentsFindAll = (
     }
   const getV1DocumentsFindById = (
     id: string,
- options?: SecondParameter<typeof customInstance<DocumentResponseDto>>,) => {
-      return customInstance<DocumentResponseDto>(
+ options?: SecondParameter<typeof customInstance<DocumentWithParticipantDto>>,) => {
+      return customInstance<DocumentWithParticipantDto>(
       {url: `/api/v1/documents/${id}`, method: 'GET'
     },
       options);
@@ -48,8 +48,8 @@ const getV1DocumentsFindAll = (
   const putV1DocumentsUpdate = (
     id: string,
     documentRequestDto: BodyType<DocumentRequestDto>,
- options?: SecondParameter<typeof customInstance<DocumentResponseDto>>,) => {
-      return customInstance<DocumentResponseDto>(
+ options?: SecondParameter<typeof customInstance<DocumentWithParticipantDto>>,) => {
+      return customInstance<DocumentWithParticipantDto>(
       {url: `/api/v1/documents/${id}`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: documentRequestDto
