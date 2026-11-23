@@ -1,33 +1,25 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useRemoveParticipant } from '@/entities/participant/api/queries.ts';
-import { useNavigate } from 'react-router-dom';
+import type { DocumentWithParticipantDto } from '@/shared/api/model';
 
 export const useLeaveDocument = (documentId: string) => {
   const queryClient = useQueryClient();
   const removeMutation = useRemoveParticipant(documentId);
-  const navigate = useNavigate();
 
   const leave = (participantId: string) => {
-    navigate('/documents', { replace: true });
-
     queryClient.removeQueries({
       queryKey: ['documents', documentId, 'access'],
-    });
-    queryClient.invalidateQueries({
-      queryKey: ['documents'],
-      exact: true,
     });
 
     void removeMutation
       .mutateAsync(participantId)
       .then(() => {
         queryClient.removeQueries({ queryKey: ['documents', documentId] });
-        queryClient.invalidateQueries({
-          queryKey: ['documents'],
-          exact: true,
-        });
       })
-      .catch(() => {
+      .finally(() => {
+        queryClient.setQueryData<DocumentWithParticipantDto[]>(['documents'], (prev) =>
+          prev?.filter((doc) => doc.id !== documentId)
+        );
         queryClient.invalidateQueries({
           queryKey: ['documents'],
           exact: true,

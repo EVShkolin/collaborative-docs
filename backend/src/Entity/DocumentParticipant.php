@@ -31,12 +31,16 @@ class DocumentParticipant
     #[ORM\Column(type: 'datetimetz_immutable')]
     private \DateTimeImmutable $joinedAt;
 
+    #[ORM\Column(type: 'datetimetz_immutable')]
+    private \DateTimeImmutable $lastAccessedAt;
+
     public function __construct(User $user, Document $document, ParticipantRole $role = ParticipantRole::VIEWER) {
         $this->id = Uuid::v7();
         $this->user = $user;
         $this->document = $document;
         $this->role = $role;
         $this->joinedAt = new \DateTimeImmutable();
+        $this->lastAccessedAt = new \DateTimeImmutable();
     }
 
     public function getId(): Uuid
@@ -82,6 +86,16 @@ class DocumentParticipant
     public function setJoinedAt(\DateTimeImmutable $joinedAt): void
     {
         $this->joinedAt = $joinedAt;
+    }
+
+    public function getLastAccessedAt(): \DateTimeImmutable
+    {
+        return $this->lastAccessedAt;
+    }
+
+    public function access(): void
+    {
+        $this->lastAccessedAt = new \DateTimeImmutable();
     }
 
 }

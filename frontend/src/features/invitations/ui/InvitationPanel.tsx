@@ -10,7 +10,7 @@ const acceptAction: InvitationActionRequestDto = { action: 'accept' } as never;
 const declineAction: InvitationActionRequestDto = { action: 'decline' } as never;
 
 export const InvitationPanel = () => {
-  const { data: invitations = [], isLoading, refetch } = useInvitations();
+  const { data: invitations = [], isLoading, refetch, isRefetching } = useInvitations();
   const { mutate, isPending, variables } = useInvitationAction();
 
   const handleAccept = (id: string) => mutate({ id, action: acceptAction });
@@ -31,7 +31,7 @@ export const InvitationPanel = () => {
             <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
           </div>
         ) : invitations.length === 0 ? (
-          <EmptyInvitationPanel onRefresh={refetch} />
+          <EmptyInvitationPanel onRefresh={refetch} isLoading={isRefetching} />
         ) : (
           <div className="flex-1 space-y-2 overflow-y-auto p-2">
             {invitations.map((invitation) => (
@@ -50,7 +50,7 @@ export const InvitationPanel = () => {
   );
 };
 
-const EmptyInvitationPanel = ({ onRefresh }: { onRefresh: () => void }) => {
+const EmptyInvitationPanel = ({ onRefresh, isLoading }: { onRefresh: () => void, isLoading: boolean }) => {
   return (
     <Empty className="h-full bg-muted/30">
       <EmptyHeader>
@@ -61,8 +61,8 @@ const EmptyInvitationPanel = ({ onRefresh }: { onRefresh: () => void }) => {
         <EmptyDescription className="max-w-xs text-pretty">Тут появлятся новые приглашения</EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        <Button variant="outline" onClick={onRefresh}>
-          <RefreshCcwIcon data-icon="inline-start" />
+        <Button variant="outline" onClick={onRefresh} disabled={isLoading}>
+          {isLoading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <RefreshCcwIcon className='mr-2 size-4' />}
           Перезагрузить
         </Button>
       </EmptyContent>

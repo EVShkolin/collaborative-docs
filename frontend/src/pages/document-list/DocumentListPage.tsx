@@ -1,17 +1,41 @@
 import { DocumentsHeader } from '@/widgets/documents-header/ui/DocumentsHeader.tsx';
 import { Button } from '@/shared/ui/button.tsx';
-import { Grid2X2, LayoutList, Plus, SlidersHorizontal } from 'lucide-react';
-import { useState } from 'react';
+import { Grid2X2, LayoutList, Search, SlidersHorizontal } from 'lucide-react';
+import { useDeferredValue, useMemo } from 'react';
 import { ToggleGroup, ToggleGroupItem } from '@/shared/ui/toggle-group.tsx';
 import { Separator } from '@/shared/ui/separator.tsx';
 import { DocumentCard } from '@/entities/document/ui/DocumentCard.tsx';
 import { useDocuments } from '@/entities/document/api/queries.ts';
 import { DocumentCardSkeleton } from '@/entities/document/ui/DocumentCardSkeleton.tsx';
+import { DocumentCreateButton } from '@/features/manage-documents';
+import { useCurrentUser } from '@/entities/user/api/queries.ts';
+import { useDocumentsFilter } from '@/features/documents-search/model/store.ts';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/shared/ui/empty.tsx';
 
 export const DocumentListPage = () => {
-  const [tab, setTab] = useState<'all' | 'mine' | 'shared'>('all');
-  const [view, setView] = useState<'grid' | 'list'>('list');
   const { data: documents } = useDocuments();
+  const { data: currentUser } = useCurrentUser();
+
+  const search = useDocumentsFilter((s) => s.search);
+  const tab = useDocumentsFilter((s) => s.tab);
+  const view = useDocumentsFilter((s) => s.view);
+  const setTab = useDocumentsFilter((s) => s.setTab);
+  const setView = useDocumentsFilter((s) => s.setView);
+
+  const deferredSearch = useDeferredValue(search);
+
+  const filtered = useMemo(() => {
+    if (!documents) return documents;
+    if (tab !== 'all' && !currentUser) return null;
+
+    const q = deferredSearch.trim().toLowerCase();
+
+    return documents.filter((doc) => {
+      if (tab === 'mine' && doc.owner.id !== currentUser!.id) return false;
+      if (tab === 'shared' && doc.owner.id === currentUser!.id) return false;
+      return !(q && !doc.title.toLowerCase().includes(q));
+    });
+  }, [documents, currentUser, tab, deferredSearch]);
 
   return (
     <>
@@ -27,10 +51,7 @@ export const DocumentListPage = () => {
               <h1 className="text-3xl font-semibold tracking-tight text-primary sm:text-4xl">Документы</h1>
               <p className="mt-2 text-sm text-muted-foreground">Все идеи и решения команды — в одном месте.</p>
             </div>
-            <Button size="lg">
-              <Plus size={16} strokeWidth={2.5} />
-              Создать документ
-            </Button>
+            <DocumentCreateButton />
           </div>
         </div>
 
@@ -78,12 +99,37 @@ export const DocumentListPage = () => {
           </ToggleGroup>
         </div>
 
-        <ul className="flex flex-col rounded-xl bg-card border mt-6 overflow-hidden">
-          {!documents
-            ? [1, 2, 3].map((v) => <DocumentCardSkeleton key={v} />)
-            : documents.map((doc) => <DocumentCard key={doc.id} doc={doc} />)}
-        </ul>
+        {!filtered ? (
+          <ul className="flex flex-col rounded-xl bg-card border mt-6 overflow-hidden">
+            {[1, 2, 3].map((v) => (
+              <DocumentCardSkeleton key={v} />
+            ))}
+          </ul>
+        ) : filtered.length === 0 ? (
+          <EmptyList />
+        ) : (
+          <ul className="flex flex-col rounded-xl bg-card border mt-6 overflow-hidden">
+            {filtered.map((doc) => (
+              <DocumentCard key={doc.id} doc={doc} />
+            ))}
+          </ul>
+        )}
       </main>
     </>
+  );
+};
+
+const EmptyList = () => {
+  return (
+    <Empty>
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <Search />
+        </EmptyMedia>
+        <EmptyTitle>Ничего не найдено</EmptyTitle>
+        <EmptyDescription className="max-w-xs text-pretty">Попробуйте изменить запрос или фильтр</EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent></EmptyContent>
+    </Empty>
   );
 };

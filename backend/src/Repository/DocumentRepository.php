@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Document;
+use App\Entity\DocumentParticipant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Uid\Uuid;
 
 /**
@@ -12,9 +14,13 @@ use Symfony\Component\Uid\Uuid;
  */
 class DocumentRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+
+    private LoggerInterface $log;
+
+    public function __construct(ManagerRegistry $registry, LoggerInterface $log)
     {
         parent::__construct($registry, Document::class);
+        $this->log = $log;
     }
 
     /**
@@ -29,5 +35,27 @@ class DocumentRepository extends ServiceEntityRepository
             ->setParameter('userId', $userId->toString())
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return array<int, array{0: Document, 1: DocumentParticipant}>
+     */
+    public function findAvailableForUserWithParticipant(Uuid $userId): array
+    {
+        $documents = $this->createQueryBuilder('d')
+            ->addSelect('p')
+            ->join('d.participants', 'p')
+            ->where('p.user = :userId')
+            ->setParameter('userId', $userId->toString())
+            ->getQuery()
+            ->getResult();
+
+        $result = [];
+        foreach ($documents as $document) {
+            $participant = $document->getParticipants()->first();
+            $result[] = [$document, $participant];
+        }
+
+        return $result;
     }
 }

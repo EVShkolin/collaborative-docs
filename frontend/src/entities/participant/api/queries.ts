@@ -1,8 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getDocumentParticipants } from '@/shared/api/apiClient';
 
-const { getV1ParticipantsFindAllByDocument, deleteV1ParticipantsDelete } =
-  getDocumentParticipants();
+const { getV1ParticipantsFindAllByDocument, deleteV1ParticipantsDelete } = getDocumentParticipants();
 
 export const useParticipantsList = (documentId: string) => {
   return useQuery({

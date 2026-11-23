@@ -23,11 +23,7 @@ export const DocumentPage = () => {
 
   return (
     <DocumentRoom documentId={documentId}>
-      <EditorGate
-        documentId={documentId}
-        currentUser={userQuery.data}
-        role={accessQuery.data.role}
-      />
+      <EditorGate documentId={documentId} currentUser={userQuery.data} role={accessQuery.data.role} />
     </DocumentRoom>
   );
 };

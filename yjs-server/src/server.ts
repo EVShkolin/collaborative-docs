@@ -7,7 +7,7 @@ export type UserContext = {
   participantId: string;
   username: string;
   role: 'viewer' | 'commenter' | 'editor' | 'owner';
-}
+};
 
 export const createHocuspocusServer = (): Server => {
   return new Server<UserContext>({
@@ -59,5 +59,5 @@ export const createHocuspocusServer = (): Server => {
     },
 
     extensions: [databaseExtension()],
-  })
+  });
 };
