@@ -13,7 +13,7 @@ class UserMapper
             $user->getId()->toString(),
             $user->getName(),
             $user->getEmail(),
-            $user->getAvatarUrl(),
+            $this->buildAvatarUrl($user),
             $user->getCreatedAt()
         );
     }
@@ -23,5 +23,13 @@ class UserMapper
             $user->name,
             $user->email
         );
+    }
+
+    private function buildAvatarUrl(User $user): ?string
+    {
+        if ($user->getAvatar() === null) {
+            return null;
+        }
+        return sprintf('/api/v1/users/%s/avatar?v=%s', $user->getId()->toString(), $user->getAvatar()->getUploadedAt()->format('Y-m-d H:i:s'));
     }
 }

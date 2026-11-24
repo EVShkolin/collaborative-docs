@@ -53,8 +53,7 @@ export const DocumentCardOptions = ({ documentId, participantId, title, isOwner 
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem variant="destructive" onClick={() => mutate(participantId)}>
-                {isPending ? <Loader2 className="mr-2 size-4 animate-spin" /> : <LogOut />} Выйти из
-                документа
+                {isPending ? <Loader2 className="mr-2 size-4 animate-spin" /> : <LogOut />} Выйти из документа
               </DropdownMenuItem>
             )}
           </DropdownMenuGroup>

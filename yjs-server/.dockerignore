@@ -1,5 +1,11 @@
 node_modules
+dist
+.git
+.gitignore
 .idea
+.env
+.env.*
 .prettierrc
 eslint.config.js
 Dockerfile
+.dockerignore

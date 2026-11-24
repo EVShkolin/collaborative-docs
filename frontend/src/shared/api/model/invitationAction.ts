@@ -6,8 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type InvitationAction = typeof InvitationAction[keyof typeof InvitationAction];
-
+export type InvitationAction = (typeof InvitationAction)[keyof typeof InvitationAction];
 
 export const InvitationAction = {
   accept: 'accept',

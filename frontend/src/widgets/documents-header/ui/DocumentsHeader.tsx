@@ -1,12 +1,12 @@
 import { DocumentsSearch } from '@/features/documents-search';
 import { Moon, Sun } from 'lucide-react';
 import { Button } from '@/shared/ui/button.tsx';
-import { UserAvatar } from '@/entities/user/ui/UserAvatar.tsx';
 import { useTheme } from '@/app/providers/theme/ThemeContext.ts';
 import { LogoIcon } from '@/shared/images/LogoIcon.tsx';
 import { useCurrentUser } from '@/entities/user/api/queries.ts';
 import { Skeleton } from '@/shared/ui/skeleton.tsx';
 import { InvitationPanel } from '@/features/invitations/ui/InvitationPanel.tsx';
+import { UserAvatarDropdown } from '@/features/manage-user/ui/UserAvatarDropdown.tsx';
 
 export const DocumentsHeader = () => {
   const { theme, toggleTheme } = useTheme();
@@ -34,7 +34,7 @@ export const DocumentsHeader = () => {
           {!currentUser ? (
             <Skeleton className="rounded-full size-10" />
           ) : (
-            <UserAvatar name={currentUser.name} avatarUrl={currentUser.avatarUrl} size="lg" />
+            <UserAvatarDropdown name={currentUser.name} avatarUrl={currentUser.avatarUrl} />
           )}
         </div>
       </div>

@@ -50,7 +50,7 @@ export const InvitationPanel = () => {
   );
 };
 
-const EmptyInvitationPanel = ({ onRefresh, isLoading }: { onRefresh: () => void, isLoading: boolean }) => {
+const EmptyInvitationPanel = ({ onRefresh, isLoading }: { onRefresh: () => void; isLoading: boolean }) => {
   return (
     <Empty className="h-full bg-muted/30">
       <EmptyHeader>
@@ -62,7 +62,7 @@ const EmptyInvitationPanel = ({ onRefresh, isLoading }: { onRefresh: () => void,
       </EmptyHeader>
       <EmptyContent>
         <Button variant="outline" onClick={onRefresh} disabled={isLoading}>
-          {isLoading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <RefreshCcwIcon className='mr-2 size-4' />}
+          {isLoading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <RefreshCcwIcon className="mr-2 size-4" />}
           Перезагрузить
         </Button>
       </EmptyContent>

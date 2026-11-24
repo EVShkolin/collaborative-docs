@@ -27,8 +27,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column]
     private ?string $passwordHash = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $avatarUrl = null;
+    #[ORM\OneToOne(targetEntity: Avatar::class, mappedBy: 'user', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private ?Avatar $avatar = null;
 
     #[ORM\Column(type: 'datetimetz_immutable')]
     private \DateTimeImmutable $createdAt;
@@ -79,14 +79,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         $this->passwordHash = $passwordHash;
     }
 
-    public function getAvatarUrl(): ?string
-    {
-        return $this->avatarUrl;
-    }
+    public function getAvatar(): ?Avatar { return $this->avatar; }
 
-    public function setAvatarUrl(?string $avatarUrl): void
+    public function setAvatar(?Avatar $avatar): void
     {
-        $this->avatarUrl = $avatarUrl;
+        if ($avatar !== null && $avatar->getUser() !== $this) {
+            $avatar->setUser($this);
+        }
+        $this->avatar = $avatar;
     }
 
     public function getCreatedAt(): \DateTimeImmutable

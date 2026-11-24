@@ -12,6 +12,7 @@ doctrine:
 
         types:
             datetime_immutable: SimPod\DoctrineUtcDateTime\UTCDateTimeImmutableType
+            string_blob: App\Repository\Type\StringBlobType
         profiling_collect_backtrace: '%kernel.debug%'
     orm:
         validate_xml_mapping: true

@@ -8,8 +8,8 @@
 
 export interface DocumentRequestDto {
   /**
-     * @minLength 1
-     * @maxLength 255
-     */
+   * @minLength 1
+   * @maxLength 255
+   */
   title: string;
 }

@@ -18,7 +18,7 @@ export const useSendInvitation = () => {
 
     onSuccess: () => {
       toast.add({ title: 'Приглашение отправлено', type: 'info' });
-    }
+    },
   });
 };
 
