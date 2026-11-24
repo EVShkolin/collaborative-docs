@@ -1,0 +1,112 @@
+services:
+  database:
+    image: postgres:17
+    container_name: database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: collab_doc
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -p 5432" ]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+    networks:
+      - app-net
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"      # для общения с приложением
+      - "15672:15672"    # для панели управления
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+    networks:
+      - app-net
+
+  yjs-server:
+    build:
+      context: ./yjs-server
+      dockerfile: Dockerfile
+    container_name: yjs-server
+    ports:
+      - "1234:1234"
+    env_file:
+      - ./yjs-server/.env
+    environment:
+      JWT_PUBLIC_KEY: /app/jwt-keys/public.pem
+    volumes:
+      - jwt_keys:/app/jwt-keys:ro
+    depends_on:
+      database:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app-net
+
+  backend-fpm:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend-fpm
+    env_file:
+      - ./backend/.env
+    volumes:
+      - jwt_keys:/var/www/html/config/jwt
+    depends_on:
+      database:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      yjs-server:
+        condition: service_started
+    networks:
+      - app-net
+
+  backend-nginx:
+    image: nginx:alpine
+    container_name: backend-nginx
+    ports:
+      - "8042:80"
+    volumes:
+      - ./backend/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      backend-fpm:
+        condition: service_started
+    networks:
+      - app-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      php-nginx:
+        condition: service_started
+      yjs-server:
+        condition: service_started
+    networks:
+      - app-net
+
+volumes:
+  pg_data:
+  jwt-keys:
+
+networks:
+  app-net:
+    driver: bridge

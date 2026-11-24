@@ -5,50 +5,54 @@
  * REST API для совместного редактирования документов
  * OpenAPI spec version: 1.0.0
  */
-import type {
-  InvitationActionRequestDto,
-  InvitationRequestDto,
-  InvitationResponseDto
-} from '../../model';
+import type { InvitationActionRequestDto, InvitationRequestDto, InvitationResponseDto } from '../../model';
 
 import { customInstance } from '../../client.config';
 import type { BodyType } from '../../client.config';
 
-
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-
-  export const getInvitations = () => {
-const getV1InvitationsFindAll = (
-
- options?: SecondParameter<typeof customInstance<InvitationResponseDto[]>>,) => {
-      return customInstance<InvitationResponseDto[]>(
-      {url: `/api/v1/invitations`, method: 'GET'
-    },
-      options);
-    }
+export const getInvitations = () => {
+  const getV1InvitationsFindAll = (options?: SecondParameter<typeof customInstance<InvitationResponseDto[]>>) => {
+    return customInstance<InvitationResponseDto[]>({ url: `/api/v1/invitations`, method: 'GET' }, options);
+  };
   const postV1InvitationsSave = (
     invitationRequestDto: BodyType<InvitationRequestDto>,
- options?: SecondParameter<typeof customInstance<InvitationResponseDto>>,) => {
-      return customInstance<InvitationResponseDto>(
-      {url: `/api/v1/invitations`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: invitationRequestDto
-    },
-      options);
-    }
+    options?: SecondParameter<typeof customInstance<InvitationResponseDto>>
+  ) => {
+    return customInstance<InvitationResponseDto>(
+      {
+        url: `/api/v1/invitations`,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        data: invitationRequestDto,
+      },
+      options
+    );
+  };
   const patchV1InvitationsUpdate = (
     id: string,
     invitationActionRequestDto: BodyType<InvitationActionRequestDto>,
- options?: SecondParameter<typeof customInstance<InvitationResponseDto>>,) => {
-      return customInstance<InvitationResponseDto>(
-      {url: `/api/v1/invitations/${id}`, method: 'PATCH',
-      headers: {'Content-Type': 'application/json', },
-      data: invitationActionRequestDto
-    },
-      options);
-    }
-  return {getV1InvitationsFindAll,postV1InvitationsSave,patchV1InvitationsUpdate}};
-export type GetV1InvitationsFindAllResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getInvitations>['getV1InvitationsFindAll']>>>
-export type PostV1InvitationsSaveResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getInvitations>['postV1InvitationsSave']>>>
-export type PatchV1InvitationsUpdateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getInvitations>['patchV1InvitationsUpdate']>>>
+    options?: SecondParameter<typeof customInstance<InvitationResponseDto>>
+  ) => {
+    return customInstance<InvitationResponseDto>(
+      {
+        url: `/api/v1/invitations/${id}`,
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        data: invitationActionRequestDto,
+      },
+      options
+    );
+  };
+  return { getV1InvitationsFindAll, postV1InvitationsSave, patchV1InvitationsUpdate };
+};
+export type GetV1InvitationsFindAllResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getInvitations>['getV1InvitationsFindAll']>>
+>;
+export type PostV1InvitationsSaveResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getInvitations>['postV1InvitationsSave']>>
+>;
+export type PatchV1InvitationsUpdateResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getInvitations>['patchV1InvitationsUpdate']>>
+>;

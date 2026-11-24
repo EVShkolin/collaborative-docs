@@ -5,46 +5,59 @@
  * REST API для совместного редактирования документов
  * OpenAPI spec version: 1.0.0
  */
-import type {
-  UserCreateDto,
-  UserResponseDto
-} from '../../model';
+import type { PutV1UsersUpdateBody, UserCreateDto, UserResponseDto } from '../../model';
 
 import { customInstance } from '../../client.config';
 import type { BodyType } from '../../client.config';
 
-
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
+export const getUsers = () => {
+  const getV1UsersFindMe = (options?: SecondParameter<typeof customInstance<UserResponseDto>>) => {
+    return customInstance<UserResponseDto>({ url: `/api/v1/users/me`, method: 'GET' }, options);
+  };
+  const putV1UsersUpdate = (
+    putV1UsersUpdateBody: BodyType<PutV1UsersUpdateBody>,
+    options?: SecondParameter<typeof customInstance<UserResponseDto>>
+  ) => {
+    const formData = new FormData();
+    formData.append(`name`, putV1UsersUpdateBody.name);
 
-  export const getUsers = () => {
-const getV1UsersFindMe = (
+    if (putV1UsersUpdateBody.name !== undefined) {
+      formData.append(`name`, putV1UsersUpdateBody.name);
+    }
+    if (putV1UsersUpdateBody.avatarImage !== undefined) {
+      formData.append(`avatarImage`, putV1UsersUpdateBody.avatarImage);
+    }
 
- options?: SecondParameter<typeof customInstance<UserResponseDto>>,) => {
-      return customInstance<UserResponseDto>(
-      {url: `/api/v1/users/me`, method: 'GET'
-    },
-      options);
-    }
-  const getV1UsersFindById = (
-    id: string,
- options?: SecondParameter<typeof customInstance<UserResponseDto>>,) => {
-      return customInstance<UserResponseDto>(
-      {url: `/api/v1/users/${id}`, method: 'GET'
-    },
-      options);
-    }
+    return customInstance<UserResponseDto>(
+      { url: `/api/v1/users/me`, method: 'PUT', headers: { 'Content-Type': 'multipart/form-data' }, data: formData },
+      options
+    );
+  };
+  const getV1UsersFindById = (id: string, options?: SecondParameter<typeof customInstance<UserResponseDto>>) => {
+    return customInstance<UserResponseDto>({ url: `/api/v1/users/${id}`, method: 'GET' }, options);
+  };
   const postV1UsersSave = (
     userCreateDto: BodyType<UserCreateDto>,
- options?: SecondParameter<typeof customInstance<UserResponseDto>>,) => {
-      return customInstance<UserResponseDto>(
-      {url: `/api/v1/users`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: userCreateDto
-    },
-      options);
-    }
-  return {getV1UsersFindMe,getV1UsersFindById,postV1UsersSave}};
-export type GetV1UsersFindMeResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getUsers>['getV1UsersFindMe']>>>
-export type GetV1UsersFindByIdResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getUsers>['getV1UsersFindById']>>>
-export type PostV1UsersSaveResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getUsers>['postV1UsersSave']>>>
+    options?: SecondParameter<typeof customInstance<UserResponseDto>>
+  ) => {
+    return customInstance<UserResponseDto>(
+      { url: `/api/v1/users`, method: 'POST', headers: { 'Content-Type': 'application/json' }, data: userCreateDto },
+      options
+    );
+  };
+  const getV1UsersGetAvatar = (id: string, options?: SecondParameter<typeof customInstance<Blob>>) => {
+    return customInstance<Blob>({ url: `/api/v1/users/${id}/avatar`, method: 'GET', responseType: 'blob' }, options);
+  };
+  return { getV1UsersFindMe, putV1UsersUpdate, getV1UsersFindById, postV1UsersSave, getV1UsersGetAvatar };
+};
+export type GetV1UsersFindMeResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getUsers>['getV1UsersFindMe']>>>;
+export type PutV1UsersUpdateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getUsers>['putV1UsersUpdate']>>>;
+export type GetV1UsersFindByIdResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getUsers>['getV1UsersFindById']>>
+>;
+export type PostV1UsersSaveResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getUsers>['postV1UsersSave']>>>;
+export type GetV1UsersGetAvatarResult = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof getUsers>['getV1UsersGetAvatar']>>
+>;

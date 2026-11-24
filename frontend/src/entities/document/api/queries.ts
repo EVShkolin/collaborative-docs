@@ -10,7 +10,7 @@ const {
   putV1DocumentsUpdate,
   getV1AccessDocument,
   postV1DocumentsSave,
-  deleteV1DocumentsDelete
+  deleteV1DocumentsDelete,
 } = getDocuments();
 
 export const useDocuments = () => {
@@ -92,6 +92,6 @@ export const useDeleteDocument = (documentId: string) => {
         description: 'Не получилось удалить документ, попробуйте позже',
         type: 'error',
       });
-    }
+    },
   });
 };

@@ -1,0 +1,15 @@
+.git
+.gitignore
+.idea
+.devcontainer
+.env
+.env.local
+.env.*
+vendor/
+var/
+config/jwt
+nginx/
+../frontend/openapi.yaml
+config/reference.php
+Dockerfile
+.dockerignore

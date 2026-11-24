@@ -6,8 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type ParticipantRole = typeof ParticipantRole[keyof typeof ParticipantRole];
-
+export type ParticipantRole = (typeof ParticipantRole)[keyof typeof ParticipantRole];
 
 export const ParticipantRole = {
   viewer: 'viewer',

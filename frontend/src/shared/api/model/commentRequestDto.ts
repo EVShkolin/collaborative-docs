@@ -8,8 +8,8 @@
 
 export interface CommentRequestDto {
   /**
-     * @minLength 1
-     * @maxLength 1000
-     */
+   * @minLength 1
+   * @maxLength 1000
+   */
   content: string;
 }

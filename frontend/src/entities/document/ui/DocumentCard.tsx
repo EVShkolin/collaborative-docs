@@ -23,7 +23,9 @@ export const DocumentCard = ({ doc }: { doc: DocumentWithParticipantDto }) => {
           <span className="min-w-0 truncate text-sm text-muted-foreground">{doc.owner.name}</span>
         </div>
 
-        <span className="min-w-0 truncate text-sm text-muted-foreground">Открыт: {formatRelativeTime(doc.lastAccessedAt)}</span>
+        <span className="min-w-0 truncate text-sm text-muted-foreground">
+          Открыт: {formatRelativeTime(doc.lastAccessedAt)}
+        </span>
       </Link>
 
       <DocumentCardOptions

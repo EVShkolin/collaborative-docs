@@ -4,12 +4,15 @@ namespace App\Service;
 
 use App\DTO\User\UserCreateDto;
 use App\DTO\User\UserResponseDto;
+use App\DTO\User\UserUpdateDto;
+use App\Entity\Avatar;
 use App\Entity\User;
 use App\Exception\ObjectNotFoundException;
 use App\Mapper\UserMapper;
 use App\Security\UserContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Uid\Uuid;
 
@@ -50,6 +53,42 @@ readonly class UserService
 
         $this->log->info("Saved new user $userDto->email");
         return $this->mapper->toDto($user);
+    }
+
+    public function update(UserUpdateDto $dto, ?UploadedFile $avatarImage): UserResponseDto
+    {
+        $user = $this->userContext->getUser();
+        $this->log->debug("IN UserService update user {$user->getId()}");
+
+        $user->setName($dto->name);
+
+        if ($avatarImage !== null) {
+            $avatar = $user->getAvatar();
+            if ($avatar === null) {
+                $avatar = new Avatar($user);
+                $user->setAvatar($avatar);
+            }
+
+            $avatar->setName($avatarImage->getClientOriginalName());
+            $avatar->setData($avatarImage->getContent());
+            $avatar->setType($avatarImage->getMimeType() ?? 'application/octet-stream');
+            $avatar->setSize($avatarImage->getSize() ?? 0);
+            $avatar->setUploadedAt(new \DateTimeImmutable());
+        }
+
+        $this->em->flush();
+
+        $this->log->info("Updated user {$user->getId()}");
+        return $this->mapper->toDto($user);
+    }
+
+    public function getAvatar(Uuid $userId): Avatar
+    {
+        $this->log->debug("IN UserService getAvatar $userId");
+
+        return $this->em->getRepository(Avatar::class)->findOneBy([
+            'user' => $this->em->getReference(User::class, $userId),
+        ]) ?? throw new ObjectNotFoundException('Avatar', $userId->toString());
     }
 
     public function delete(Uuid $id): void

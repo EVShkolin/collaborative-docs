@@ -17,6 +17,7 @@ export const AppRouter = () => {
           <Route path="/documents" element={<DocumentListPage />} />
           <Route path="/documents/:documentId" element={<DocumentPage />} />
         </Route>
+        <Route path='*' element={<Navigate to={'/documents'} />} />
       </Routes>
     </BrowserRouter>
   );
