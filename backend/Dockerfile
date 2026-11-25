@@ -56,6 +56,10 @@ until php -r 'try { new PDO("pgsql:host=".getenv("POSTGRES_URL").";port=".getenv
     sleep 2
 done
 
+mkdir -p config/jwt
+chown -R www-data:www-data config/jwt
+chmod 755 config/jwt
+
 if [ ! -f config/jwt/private.pem ] || [ ! -f config/jwt/public.pem ]; then
     echo "Generating JWT keypair..."
     su-exec www-data php bin/console lexik:jwt:generate-keypair --overwrite --no-interaction
@@ -64,10 +68,22 @@ fi
 su-exec www-data php bin/console cache:clear --no-warmup
 su-exec www-data php bin/console cache:warmup
 su-exec www-data php bin/console assets:install public --no-interaction
+TABLES=$(php -r 'try { $pdo = new PDO("pgsql:host=".getenv("POSTGRES_URL").";port=".getenv("POSTGRES_PORT").";dbname=".getenv("POSTGRES_DB"), getenv("POSTGRES_USERNAME"), getenv("POSTGRES_PASSWORD")); $stmt = $pdo->prepare("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = current_schema() AND table_name = ?"); $stmt->execute(["users"]); echo (int) $stmt->fetchColumn(); } catch (Throwable $e) { echo 0; }')
+VERSIONS=$(php -r 'try { $pdo = new PDO("pgsql:host=".getenv("POSTGRES_URL").";port=".getenv("POSTGRES_PORT").";dbname=".getenv("POSTGRES_DB"), getenv("POSTGRES_USERNAME"), getenv("POSTGRES_PASSWORD")); echo (int) $pdo->query("SELECT COUNT(*) FROM doctrine_migration_versions")->fetchColumn(); } catch (Throwable $e) { echo 0; }')
+
+if [ "$TABLES" -gt 0 ] && [ "$VERSIONS" -eq 0 ]; then
+    echo "Database is not empty but has no migration history; marking existing migrations as applied..."
+    su-exec www-data php bin/console doctrine:migrations:sync-metadata-storage --no-interaction || true
+    su-exec www-data php bin/console doctrine:migrations:version --add --all --no-interaction
+fi
+
 su-exec www-data php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 
 exec php-fpm -F
 EOF
+
+RUN sed -i 's/\r$//' /usr/local/bin/entrypoint.sh \
+    && chmod +x /usr/local/bin/entrypoint.sh
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
 

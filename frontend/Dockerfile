@@ -27,7 +27,7 @@ server {
     error_log  /dev/stderr warn;
 
     resolver 127.0.0.11 valid=10s ipv6=off;
-    set $backend_upstream php-nginx:80;
+    set $backend_upstream backend-nginx:80;
     set $yjs_upstream yjs-server:1234;
 
     location /api/ {

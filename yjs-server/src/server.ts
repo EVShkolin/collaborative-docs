@@ -9,9 +9,9 @@ export type UserContext = {
   role: 'viewer' | 'commenter' | 'editor' | 'owner';
 };
 
-export const createHocuspocusServer = (): Server => {
+export const createHocuspocusServer = (port: number): Server => {
   return new Server<UserContext>({
-    port: 1234,
+    port: port,
 
     async onAuthenticate({ token, documentName, connectionConfig }) {
       const payload = getDataFromToken(token);

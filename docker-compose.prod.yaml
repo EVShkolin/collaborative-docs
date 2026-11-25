@@ -46,6 +46,8 @@ services:
       - ./yjs-server/.env
     environment:
       JWT_PUBLIC_KEY: /app/jwt-keys/public.pem
+      POSTGRES_HOST: database
+      MESSENGER_TRANSPORT_DSN: amqp://guest:guest@rabbitmq:5672/%2f
     volumes:
       - jwt_keys:/app/jwt-keys:ro
     depends_on:
@@ -96,7 +98,7 @@ services:
     ports:
       - "5173:80"
     depends_on:
-      php-nginx:
+      backend-nginx:
         condition: service_started
       yjs-server:
         condition: service_started
@@ -105,7 +107,7 @@ services:
 
 volumes:
   pg_data:
-  jwt-keys:
+  jwt_keys:
 
 networks:
   app-net:

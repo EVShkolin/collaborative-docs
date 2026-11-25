@@ -30,7 +30,6 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
 COPY --from=build /app/dist ./dist
-COPY jwt-public.pem ./jwt-public.pem
 
 EXPOSE 1234
 
