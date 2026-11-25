@@ -44,6 +44,7 @@ php bin/console nelmio:apidoc:dump --format=yaml > openapi.yaml
 | `APP_SECRET`    | Секретный ключ для подписи CSRF-токенов, remember-me cookie и других криптографических операций. Значение в `.env` — **заглушка**, в production обязательно заменить. Сгенерировать: `php -r "echo bin2hex(random_bytes(16));"`. | — (нет безопасного дефолта) | Да          |
 | `APP_SHARE_DIR` | Каталог для общих файлов между релизами (например, при деплое через symlink-релизы). Используется в рецептах деплоя.                                                                                                             | `var/share`                 | Нет         |
 | `DEFAULT_URI`   | Базовый URI приложения. Используется консольными командами и генератором URL, когда нет HTTP-контекста (например, в `messenger:consume` или `bin/console`).                                                                      | `http://localhost`          | Нет         |
+| `FRONTEND_URL`  | Базовый URL фронтенд-приложения. Нужен для работы OAuth 2                                                                                                                                                                        | `http://localhost:5173`     | Нет         |
 
 ### Database (PostgreSQL)
 
@@ -69,3 +70,15 @@ php bin/console nelmio:apidoc:dump --format=yaml > openapi.yaml
 | Переменная                | Описание                                                                                                                                                                                                | По умолчанию                            | Обязательна |
 |---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|-------------|
 | `MESSENGER_TRANSPORT_DSN` | DSN-строка подключения к RabbitMQ для транспорта Symfony Messenger. Формат: `amqp://USER:PASSWORD@HOST:PORT/VHOST`, где `VHOST` должен быть URL-encoded. Например, `%2f` означает виртуальный хост `/`. | `amqp://guest:guest@localhost:5672/%2f` | Да          |
+
+## OAuth 2
+
+Эти переменные нужны для работы OAuth 2 — авторизации через сторонние сервисы (Google, GitHub). Без них соответствующие
+кнопки «Войти с» на фронтенде работать не будут, а `knpu_oauth2_client` не сможет зарегистрировать клиентов.
+
+| Переменная                   | Описание                                                                                                                                                     | По умолчанию | Обязательна |
+|------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|-------------|
+| `OAUTH_GOOGLE_CLIENT_ID`     | Client ID OAuth-приложения Google. Выдаётся в Google Cloud Console при создании OAuth 2.0 Client ID. Используется `knpu_oauth2_client` для клиента `google`. | —            | Нет         |
+| `OAUTH_GOOGLE_CLIENT_SECRET` | Client Secret OAuth-приложения Google. Выдаётся там же, в Google Cloud Console. Должен совпадать с секретом, привязанным к Client ID на стороне Google.      | —            | Нет         |
+| `OAUTH_GITHUB_CLIENT_ID`     | Client ID OAuth-приложения GitHub. Выдаётся в GitHub → Settings → Developer settings → OAuth Apps. Используется `knpu_oauth2_client` для клиента `github`.   | —            | Нет         |
+| `OAUTH_GITHUB_CLIENT_SECRET` | Client Secret OAuth-приложения GitHub. Выдаётся там же. Должен совпадать с секретом, привязанным к Client ID на стороне GitHub.                              | —            | Нет         |
