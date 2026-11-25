@@ -6,7 +6,6 @@ use App\Entity\Document;
 use App\Entity\DocumentParticipant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Uid\Uuid;
 
 /**
@@ -15,12 +14,9 @@ use Symfony\Component\Uid\Uuid;
 class DocumentRepository extends ServiceEntityRepository
 {
 
-    private LoggerInterface $log;
-
-    public function __construct(ManagerRegistry $registry, LoggerInterface $log)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Document::class);
-        $this->log = $log;
     }
 
     /**

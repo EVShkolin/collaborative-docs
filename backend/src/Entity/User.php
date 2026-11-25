@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -24,11 +26,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(length: 100, unique: true)]
     private string $email;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?string $passwordHash = null;
 
     #[ORM\OneToOne(targetEntity: Avatar::class, mappedBy: 'user', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private ?Avatar $avatar = null;
+
+    #[ORM\OneToMany(targetEntity: OAuthConnection::class, mappedBy: 'user', cascade: ['remove'])]
+    private Collection $oAuthConnections;
 
     #[ORM\Column(type: 'datetimetz_immutable')]
     private \DateTimeImmutable $createdAt;
@@ -41,6 +46,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         $this->id = Uuid::v7();
         $this->name = $name;
         $this->email = $email;
+        $this->oAuthConnections = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -99,6 +105,15 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         $this->createdAt = $createdAt;
     }
 
+    public function getOAuthConnections(): Collection
+    {
+        return $this->oAuthConnections;
+    }
+
+    public function setOAuthConnections(Collection $oAuthConnections): void
+    {
+        $this->oAuthConnections = $oAuthConnections;
+    }
 
     public function getDeletedAt(): ?\DateTimeImmutable
     {

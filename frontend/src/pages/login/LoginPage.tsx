@@ -19,6 +19,9 @@ import { useAuth } from '@/app/providers/auth/AuthContext.ts';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/shared/ui/input-group.tsx';
 const { postApiV1AuthLogin } = getAuthentication();
 
+const GOOGLE_CONNECT_URL = 'http://localhost:8042/api/v1/auth/google/connect';
+const GITHUB_CONNECT_URL = 'http://localhost:8042/api/v1/auth/github/connect';
+
 const loginSchema = z.object({
   email: z.email(),
   password: z.string().min(5, 'Минимум 5 символов'),
@@ -64,10 +67,10 @@ export const LoginPage = () => {
 
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" type="button">
+            <Button variant="outline" type="button" onClick={() => window.location.assign(GOOGLE_CONNECT_URL)}>
               <GoogleIcon className="mr-2 size-4" /> Google
             </Button>
-            <Button variant="outline" type="button">
+            <Button variant="outline" type="button" onClick={() => window.location.assign(GITHUB_CONNECT_URL)}>
               <GithubIcon className="mr-2 size-4" /> GitHub
             </Button>
           </div>
